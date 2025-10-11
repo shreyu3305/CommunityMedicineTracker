@@ -133,7 +133,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch }) => {
           </div>
         </div>
 
-        <h1 style={titleStyles}>Find Medicines Around You – Instantly</h1>
+        <h1 style={titleStyles}>Sumesh Fucked Shreya</h1>
         <p style={subtitleStyles}>
           Connect with local pharmacies and community members to find the medicines you need, when you need them.
         </p>
