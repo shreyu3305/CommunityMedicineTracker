@@ -15,6 +15,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'user' | 'pharmacist' | null>(null);
   const [loginError, setLoginError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Static login credentials for testing
   const mockCredentials = {
@@ -28,19 +29,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setIsLoading(true);
 
     if (!selectedRole) {
       setLoginError('Please select a role first');
+      setIsLoading(false);
       return;
     }
 
     if (!email || !password) {
       setLoginError('Please enter both email and password');
+      setIsLoading(false);
       return;
     }
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Check credentials against mock data
     const credentials = mockCredentials[selectedRole];
@@ -49,6 +56,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     } else {
       setLoginError('Invalid email or password');
     }
+    
+    setIsLoading(false);
   };
 
   const containerStyles: React.CSSProperties = {
@@ -252,9 +261,83 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 variant="primary"
                 size="lg"
                 fullWidth
-                style={{ marginBottom: spacing.md }}
+                style={{ 
+                  marginBottom: spacing.md,
+                  background: 'linear-gradient(135deg, #00A6FB 0%, #06D6A0 100%)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '16px 24px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: 'white',
+                  boxShadow: '0 4px 15px rgba(0, 166, 251, 0.3)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 166, 251, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 166, 251, 0.3)';
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(0.98)';
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1)';
+                }}
               >
-                {isSignup ? 'Sign Up' : 'Sign In'}
+                <span style={{ 
+                  position: 'relative', 
+                  zIndex: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}>
+                  {isLoading ? (
+                    <>
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                        style={{ 
+                          animation: 'spin 1s linear infinite',
+                          transformOrigin: 'center'
+                        }}
+                      >
+                        <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                      </svg>
+                      Signing In...
+                    </>
+                  ) : (
+                    <>
+                      {isSignup ? 'Sign Up' : 'Sign In'}
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                        style={{ transition: 'transform 0.3s ease' }}
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </>
+                  )}
+                </span>
               </Button>
 
               <Button
@@ -263,6 +346,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 size="md"
                 fullWidth
                 onClick={() => setSelectedRole(null)}
+                style={{
+                  background: 'transparent',
+                  border: `2px solid ${colors.neutral[200]}`,
+                  borderRadius: '12px',
+                  padding: '12px 24px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: colors.neutral[600],
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.color = colors.primary;
+                  e.currentTarget.style.backgroundColor = `${colors.primary}10`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = colors.neutral[200];
+                  e.currentTarget.style.color = colors.neutral[600];
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
                 Choose Different Role
               </Button>
@@ -287,6 +391,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           )}
         </Card>
       </div>
+
+      <style>
+        {`
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
