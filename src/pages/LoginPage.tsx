@@ -119,7 +119,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             <Pill size={48} color="white" />
           </div>
           <h1 style={{ fontSize: '42px', fontWeight: 700, marginBottom: spacing.lg, lineHeight: '120%' }}>
-           Sumesh Fucked Shreya
+           Community Medicine Tracker 
           </h1>
           <p style={{ fontSize: '18px', opacity: 0.9, lineHeight: '150%', marginBottom: spacing.xl }}>
             Join thousands of community members helping each other find essential medicines in their area.
