@@ -133,13 +133,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch }) => {
           </div>
         </div>
 
-        <h1 style={titleStyles}>Sumesh Fucked Shreya</h1>
+        <h1 style={titleStyles}>Find Medicines Around You – Instantly</h1>
         <p style={subtitleStyles}>
           Connect with local pharmacies and community members to find the medicines you need, when you need them.
         </p>
 
-        <div style={searchCardStyles}>
-          <Card padding="lg" className="search-card">
+        <Card padding="lg" className="search-card" style={searchCardStyles}>
           <div style={searchGridStyles}>
             <Input
               placeholder="Search for a medicine..."
@@ -165,8 +164,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch }) => {
           >
             Search Now
           </Button>
-          </Card>
-        </div>
+        </Card>
 
         <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Button variant="outline" size="md" onClick={() => onSearch('', '')}>
