@@ -19,7 +19,7 @@ export const Badge: React.FC<BadgeProps> = ({
     warning: { bg: '#FEF3C7', text: colors.warning },
     error: { bg: '#FEE2E2', text: colors.error },
     info: { bg: '#DBEAFE', text: colors.info },
-    neutral: { bg: colors.neutral[100], text: colors.neutral[700] },
+    neutral: { bg: colors.neutral[100], text: colors.text.secondary },
   };
 
   const sizeStyles = {

@@ -18,13 +18,16 @@ export const MedicineDetailsPage: React.FC<MedicineDetailsPageProps> = ({
 
   const containerStyles: React.CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: colors.neutral[50],
+    background: colors.gradient.primary,
+    position: 'relative',
   };
 
   const headerStyles: React.CSSProperties = {
-    background: colors.gradient.blueTeal,
-    color: 'white',
+    background: colors.gradient.primary,
+    color: colors.text.inverse,
     padding: spacing.xl,
+    position: 'relative',
+    zIndex: 2,
   };
 
   const headerContentStyles: React.CSSProperties = {
@@ -36,26 +39,32 @@ export const MedicineDetailsPage: React.FC<MedicineDetailsPageProps> = ({
     maxWidth: '1200px',
     margin: '0 auto',
     padding: spacing.lg,
+    position: 'relative',
+    zIndex: 2,
   };
 
   const tabsContainerStyles: React.CSSProperties = {
     display: 'flex',
     gap: spacing.sm,
     marginBottom: spacing.lg,
-    borderBottom: `2px solid ${colors.neutral[200]}`,
+    borderBottom: `2px solid rgba(255, 255, 255, 0.2)`,
+    background: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: '16px 16px 0 0',
+    padding: spacing.md,
+    backdropFilter: 'blur(10px)',
   };
 
   const tabStyles = (isActive: boolean): React.CSSProperties => ({
     padding: `${spacing.md} ${spacing.lg}`,
     fontSize: '16px',
-    fontWeight: 600,
-    color: isActive ? colors.primary : colors.neutral[600],
-    backgroundColor: 'transparent',
+    fontWeight: 700,
+    color: isActive ? 'white' : 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: isActive ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
     border: 'none',
-    borderBottom: `3px solid ${isActive ? colors.primary : 'transparent'}`,
+    borderRadius: '12px',
     cursor: 'pointer',
-    transition: 'all 0.25s',
-    marginBottom: '-2px',
+    transition: 'all 0.3s ease',
+    backdropFilter: 'blur(10px)',
   });
 
   const availabilityListStyles: React.CSSProperties = {
@@ -77,7 +86,15 @@ export const MedicineDetailsPage: React.FC<MedicineDetailsPageProps> = ({
           >
             Back to Results
           </Button>
-          <h1 style={{ fontSize: '36px', fontWeight: 700, marginBottom: spacing.md }}>
+          <h1 style={{ 
+            fontSize: '42px', 
+            fontWeight: 800, 
+            marginBottom: spacing.md,
+            textShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             {medicineName}
           </h1>
           <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
@@ -85,7 +102,13 @@ export const MedicineDetailsPage: React.FC<MedicineDetailsPageProps> = ({
             <Badge variant="neutral" size="md">500mg</Badge>
             <Badge variant="neutral" size="md">Generic Available</Badge>
           </div>
-          <p style={{ marginTop: spacing.md, fontSize: '16px', opacity: 0.9 }}>
+          <p style={{ 
+            marginTop: spacing.md, 
+            fontSize: '18px', 
+            opacity: 0.95,
+            fontWeight: 400,
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+          }}>
             Paracetamol - Pain reliever and fever reducer
           </p>
         </div>

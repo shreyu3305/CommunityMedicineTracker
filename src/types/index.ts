@@ -6,6 +6,33 @@ export interface Medicine {
   strength?: string;
   manufacturer?: string;
   description?: string;
+  category?: string;
+  price?: number;
+  originalPrice?: number;
+  currency?: string;
+  dosage?: {
+    adults: string;
+    children: string;
+    elderly: string;
+  };
+  sideEffects?: string[];
+  interactions?: string[];
+  warnings?: string[];
+  storage?: string;
+  expiry?: string;
+  availability?: 'in_stock' | 'low_stock' | 'out_of_stock';
+  rating?: number;
+  reviewCount?: number;
+  images?: string[];
+}
+
+export interface MedicineCategory {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  medicineCount: number;
 }
 
 export interface Pharmacy {
@@ -20,6 +47,11 @@ export interface Pharmacy {
   openHours?: OpenHours;
   logoUrl?: string;
   distance?: number;
+  confidenceScore?: number;
+  lastUpdated?: string;
+  price?: number;
+  originalPrice?: number;
+  currency?: string;
 }
 
 export interface OpenHours {

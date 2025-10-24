@@ -4,6 +4,12 @@ import { Button } from './Button';
 import { Input } from './Input';
 import { Card } from './Card';
 import { Badge } from './Badge';
+import { PhotoUpload } from './PhotoUpload';
+import { FormValidation, useFormValidation, validationRules } from './FormValidation';
+import { ProgressIndicator, StepProgressIndicator } from './ProgressIndicator';
+import { useDraftSaving } from '../hooks/useDraftSaving';
+import { SuccessAnimation, ConfettiAnimation, SuccessNotification } from './SuccessAnimation';
+import { ReportHistory, ReportStatistics } from './ReportHistory';
 import { colors, spacing, borderRadius, shadows } from '../styles/tokens';
 
 interface ReportModalProps {
@@ -18,15 +24,97 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
     medicine: '',
     status: '',
     notes: '',
+    photo: null as File | null,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const validationConfig = {
+    pharmacy: {
+      ...validationRules.required('Pharmacy name is required'),
+      ...validationRules.pharmacyName('Please enter a valid pharmacy name')
+    },
+    medicine: {
+      ...validationRules.required('Medicine name is required'),
+      ...validationRules.medicineName('Please enter a valid medicine name')
+    },
+    status: {
+      ...validationRules.required('Status is required')
+    }
+  };
+
+  const {
+    values,
+    errors,
+    touched,
+    setValue,
+    setTouchedField,
+    validateForm,
+    getFieldProps
+  } = useFormValidation(validationConfig);
+  
+  // Draft saving functionality
+  const {
+    saveDraft,
+    loadDraft,
+    deleteDraft,
+    drafts,
+    currentDraft,
+    isSaving,
+    lastSaved
+  } = useDraftSaving({
+    key: 'report_modal',
+    autoSave: true,
+    autoSaveInterval: 30000, // 30 seconds
+    maxDrafts: 3
+  });
+
+  // Progress steps
+  const progressSteps = [
+    {
+      id: 'pharmacy',
+      title: 'Pharmacy Info',
+      description: 'Enter pharmacy details',
+      status: step >= 1 ? (step > 1 ? 'completed' : 'current') : 'pending'
+    },
+    {
+      id: 'medicine',
+      title: 'Medicine Details',
+      description: 'Specify medicine information',
+      status: step >= 2 ? (step > 2 ? 'completed' : 'current') : 'pending'
+    },
+    {
+      id: 'status',
+      title: 'Availability Status',
+      description: 'Report medicine availability',
+      status: step >= 3 ? (step > 3 ? 'completed' : 'current') : 'pending'
+    },
+    {
+      id: 'review',
+      title: 'Review & Submit',
+      description: 'Review and submit report',
+      status: step >= 4 ? 'completed' : 'pending'
+    }
+  ];
 
   const handleSubmit = () => {
-    setIsSubmitted(true);
-    setTimeout(() => {
-      onSubmit(formData);
-      onClose();
-    }, 2000);
+    if (validateForm()) {
+      setIsSubmitted(true);
+      setShowSuccessAnimation(true);
+      setShowConfetti(true);
+      
+      // Save as draft before submitting
+      saveDraft(formData, 'report', 'Medicine Availability Report');
+      
+      setTimeout(() => {
+        onSubmit(formData);
+        setShowSuccessAnimation(false);
+        setShowConfetti(false);
+        onClose();
+      }, 3000);
+    }
   };
 
   const overlayStyles: React.CSSProperties = {
@@ -35,35 +123,40 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'white',
     zIndex: 1000,
-    padding: spacing.lg,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden'
   };
 
   const modalStyles: React.CSSProperties = {
     backgroundColor: 'white',
-    borderRadius: borderRadius['2xl'],
-    maxWidth: '600px',
     width: '100%',
-    maxHeight: '90vh',
-    overflow: 'auto',
-    boxShadow: shadows['2xl'],
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
     position: 'relative',
   };
 
   const headerStyles: React.CSSProperties = {
-    padding: spacing.xl,
+    padding: `${spacing.lg} ${spacing.xl}`,
     borderBottom: `1px solid ${colors.neutral[200]}`,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: 'white',
+    zIndex: 10,
+    flexShrink: 0
   };
 
   const contentStyles: React.CSSProperties = {
     padding: spacing.xl,
+    flex: 1,
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column'
   };
 
   const progressBarStyles: React.CSSProperties = {
@@ -112,6 +205,25 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
     return (
       <div style={overlayStyles} onClick={onClose}>
         <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
+          {/* Success Animations */}
+          {showSuccessAnimation && (
+            <SuccessAnimation
+              isVisible={true}
+              type="check"
+              size="xl"
+              message="Report Submitted!"
+              subMessage="Thank you for your contribution"
+              duration={2000}
+            />
+          )}
+          
+          {showConfetti && (
+            <ConfettiAnimation
+              isVisible={true}
+              duration={3000}
+            />
+          )}
+          
           <div style={successContainerStyles}>
             <div style={checkIconWrapperStyles}>
               <Check size={48} color="white" strokeWidth={3} />
@@ -119,18 +231,121 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
             <h2 style={{ fontSize: '28px', fontWeight: 700, color: colors.neutral[900], marginBottom: spacing.md }}>
               Thank You!
             </h2>
-            <p style={{ fontSize: '16px', color: colors.neutral[600], lineHeight: '150%' }}>
+            <p style={{ fontSize: '16px', color: colors.neutral[600], lineHeight: '150%', marginBottom: spacing.lg }}>
               Your report has been submitted successfully and is now being reviewed by our community moderators.
             </p>
-          </div>
+            
+            {formData.photo && (
+              <div style={{ 
+                background: colors.neutral[50], 
+                padding: spacing.md, 
+                borderRadius: borderRadius.lg,
+                border: `1px solid ${colors.neutral[200]}`
+              }}>
+                <p style={{ fontSize: '14px', color: colors.neutral[600], marginBottom: spacing.sm }}>
+                  Photo uploaded:
+                </p>
+                <div style={{ 
+                  width: '100px', 
+                  height: '100px', 
+                  borderRadius: borderRadius.md,
+                  overflow: 'hidden',
+                  margin: '0 auto',
+                  border: `2px solid ${colors.neutral[200]}`
+                }}>
+                  <img 
+                    src={URL.createObjectURL(formData.photo)} 
+                    alt="Uploaded photo" 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover' 
+                    }} 
+                  />
+                </div>
+              </div>
+            )}
         </div>
       </div>
-    );
+      
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+          }
+        `}
+      </style>
+    </div>
+  );
   }
 
   return (
     <div style={overlayStyles} onClick={onClose}>
       <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
+        {/* Progress Indicator - Full Width */}
+        <div style={{ 
+          padding: `${spacing.lg} ${spacing.xl}`,
+          borderBottom: `1px solid ${colors.neutral[200]}`,
+          backgroundColor: colors.background.secondary
+        }}>
+          <ProgressIndicator
+            steps={progressSteps}
+            currentStep={step}
+            orientation="horizontal"
+            size="md"
+            showDescriptions={true}
+            style={{ width: '100%' }}
+          />
+        </div>
+        
+        {/* Draft Status */}
+        {isSaving && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            padding: spacing.sm,
+            background: colors.info + '15',
+            borderRadius: borderRadius.md,
+            marginBottom: spacing.md,
+            fontSize: '12px',
+            color: colors.info
+          }}>
+            <div style={{
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+              background: colors.info,
+              animation: 'pulse 1s infinite'
+            }} />
+            Saving draft...
+          </div>
+        )}
+        
+        {lastSaved && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            padding: spacing.sm,
+            background: colors.success + '15',
+            borderRadius: borderRadius.md,
+            marginBottom: spacing.md,
+            fontSize: '12px',
+            color: colors.success
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: colors.success
+            }} />
+            Last saved: {lastSaved.toLocaleTimeString()}
+          </div>
+        )}
+        
         <div style={headerStyles}>
           <div>
             <h2 style={{ fontSize: '24px', fontWeight: 600, color: colors.neutral[900] }}>
@@ -172,11 +387,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
                   Choose the pharmacy where you want to report medicine availability
                 </p>
               </div>
-              <Input
+              <FormValidation
                 placeholder="Search for pharmacy..."
                 value={formData.pharmacy}
-                onChange={(e) => setFormData({ ...formData, pharmacy: e.target.value })}
-                icon={<MapPin size={20} />}
+                onChange={(value) => setFormData({ ...formData, pharmacy: value })}
+                rules={validationConfig.pharmacy}
+                label="Pharmacy Name"
               />
               <div style={{ marginTop: spacing.lg }}>
                 <Button
@@ -203,11 +419,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
                   Search for the medicine you want to report
                 </p>
               </div>
-              <Input
+              <FormValidation
                 placeholder="Search for medicine..."
                 value={formData.medicine}
-                onChange={(e) => setFormData({ ...formData, medicine: e.target.value })}
-                icon={<Pill size={20} />}
+                onChange={(value) => setFormData({ ...formData, medicine: value })}
+                rules={validationConfig.medicine}
+                label="Medicine Name"
               />
               <div style={{ marginTop: spacing.lg, display: 'flex', gap: spacing.md }}>
                 <Button variant="outline" size="lg" onClick={() => setStep(1)} fullWidth>
@@ -301,8 +518,32 @@ export const ReportModal: React.FC<ReportModalProps> = ({ onClose, onSubmit }) =
                   outline: 'none',
                   resize: 'vertical',
                   fontFamily: 'inherit',
+                  marginBottom: spacing.lg,
                 }}
               />
+              
+              <div style={{ marginBottom: spacing.lg }}>
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: 600, 
+                  color: colors.neutral[700], 
+                  marginBottom: spacing.sm 
+                }}>
+                  Upload Photo (Optional)
+                </h4>
+                <p style={{ 
+                  fontSize: '14px', 
+                  color: colors.neutral[500], 
+                  marginBottom: spacing.md 
+                }}>
+                  Add a photo of the medicine or receipt for better verification
+                </p>
+                <PhotoUpload
+                  onPhotoChange={(file) => setFormData({ ...formData, photo: file })}
+                  maxSize={5}
+                  acceptedFormats={['image/jpeg', 'image/png', 'image/webp']}
+                />
+              </div>
               <div style={{ marginTop: spacing.lg, display: 'flex', gap: spacing.md }}>
                 <Button variant="outline" size="lg" onClick={() => setStep(3)} fullWidth>
                   Back

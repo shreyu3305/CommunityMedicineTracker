@@ -1,33 +1,61 @@
 export const colors = {
-  primary: '#00A6FB',
-  primaryLight: '#42BFFF',
-  primaryDark: '#0081C9',
-  secondary: '#06D6A0',
-  secondaryLight: '#26E7B4',
-  accent: '#7B68EE',
+  // Primary colors with better contrast
+  primary: '#4F46E5', // Indigo-600 - Better contrast
+  primaryLight: '#6366F1', // Indigo-500
+  primaryDark: '#3730A3', // Indigo-700
+  secondary: '#7C3AED', // Violet-600
+  secondaryLight: '#8B5CF6', // Violet-500
+  accent: '#EC4899', // Pink-500
 
-  success: '#10B981',
-  warning: '#F59E0B',
-  error: '#EF4444',
-  info: '#3B82F6',
+  // Status colors with proper contrast
+  success: '#059669', // Emerald-600
+  warning: '#D97706', // Amber-600
+  error: '#DC2626', // Red-600
+  info: '#2563EB', // Blue-600
 
+  // Neutral colors with proper contrast ratios
   neutral: {
-    50: '#F8FAFC',
-    100: '#F1F5F9',
-    200: '#E2E8F0',
-    300: '#CBD5E1',
-    400: '#94A3B8',
-    500: '#64748B',
-    600: '#475569',
-    700: '#334155',
-    800: '#1E293B',
-    900: '#111827',
+    50: '#F8FAFC',   // Slate-50
+    100: '#F1F5F9',  // Slate-100
+    200: '#E2E8F0',  // Slate-200
+    300: '#CBD5E1',  // Slate-300
+    400: '#94A3B8',  // Slate-400
+    500: '#64748B',  // Slate-500
+    600: '#475569',  // Slate-600
+    700: '#334155',  // Slate-700
+    800: '#1E293B',  // Slate-800
+    900: '#0F172A',  // Slate-900
+  },
+
+  // Text colors with proper contrast
+  text: {
+    primary: '#0F172A',    // Slate-900 - High contrast
+    secondary: '#475569',  // Slate-600 - Good contrast
+    tertiary: '#64748B',  // Slate-500 - Medium contrast
+    inverse: '#FFFFFF',   // White for dark backgrounds
+    muted: '#94A3B8',     // Slate-400 - Lower contrast for muted text
+  },
+
+  // Background colors
+  background: {
+    primary: '#FFFFFF',   // White
+    secondary: '#F8FAFC', // Slate-50
+    tertiary: '#F1F5F9',  // Slate-100
+    dark: '#0F172A',      // Slate-900
+  },
+
+  // Border colors
+  border: {
+    light: '#E2E8F0',    // Slate-200
+    medium: '#CBD5E1',   // Slate-300
+    dark: '#94A3B8',     // Slate-400
   },
 
   gradient: {
-    blueTeal: 'linear-gradient(135deg, #00A6FB 0%, #06D6A0 100%)',
-    lightBlue: 'linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%)',
+    primary: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
+    light: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)',
     subtle: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+    glass: 'rgba(255, 255, 255, 0.95)',
   }
 };
 

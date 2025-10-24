@@ -23,17 +23,20 @@ export const Card: React.FC<CardProps> = ({
   };
 
   const baseStyles: React.CSSProperties = {
-    background: 'white',
-    borderRadius: borderRadius.xl,
-    boxShadow: shadows.md,
+    background: colors.background.primary,
+    borderRadius: '24px',
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
     padding: paddingMap[padding],
-    transition: transitions.base,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     cursor: onClick ? 'pointer' : 'default',
+    backdropFilter: 'blur(20px)',
+    border: `1px solid ${colors.border.light}`,
+    color: colors.text.primary,
   };
 
   const hoverStyles: React.CSSProperties = {
-    transform: 'translateY(-2px)',
-    boxShadow: shadows.lg,
+    transform: 'translateY(-8px)',
+    boxShadow: '0 30px 60px rgba(0, 0, 0, 0.15)',
   };
 
   return (

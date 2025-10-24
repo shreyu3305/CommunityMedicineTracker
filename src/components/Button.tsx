@@ -37,14 +37,14 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles: Record<string, React.CSSProperties> = {
     primary: {
-      background: colors.gradient.blueTeal,
-      color: 'white',
-      boxShadow: shadows.md,
+      background: colors.gradient.primary,
+      color: colors.text.inverse,
+      boxShadow: '0 8px 25px rgba(79, 70, 229, 0.4)',
     },
     secondary: {
-      background: colors.neutral[100],
-      color: colors.neutral[900],
-      boxShadow: shadows.sm,
+      background: 'rgba(79, 70, 229, 0.1)',
+      color: colors.primary,
+      boxShadow: '0 4px 15px rgba(79, 70, 229, 0.2)',
     },
     outline: {
       background: 'transparent',
@@ -73,8 +73,8 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const hoverStyles: React.CSSProperties = {
-    transform: 'translateY(-1px)',
-    boxShadow: variant === 'primary' ? shadows.lg : shadows.md,
+    transform: 'translateY(-3px)',
+    boxShadow: variant === 'primary' ? '0 12px 35px rgba(102, 126, 234, 0.5)' : '0 8px 25px rgba(102, 126, 234, 0.3)',
   };
 
   return (

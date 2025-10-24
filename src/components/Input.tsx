@@ -26,7 +26,7 @@ export const Input: React.FC<InputProps> = ({
   const labelStyles: React.CSSProperties = {
     fontSize: '14px',
     fontWeight: 500,
-    color: colors.neutral[700],
+    color: colors.text.secondary,
   };
 
   const inputContainerStyles: React.CSSProperties = {
@@ -39,18 +39,18 @@ export const Input: React.FC<InputProps> = ({
     width: '100%',
     padding: icon ? `${spacing.md} ${spacing.md} ${spacing.md} 48px` : `${spacing.md} ${spacing.md}`,
     fontSize: '16px',
-    border: `2px solid ${error ? colors.error : isFocused ? colors.primary : colors.neutral[200]}`,
+    border: `2px solid ${error ? colors.error : isFocused ? colors.primary : colors.border.light}`,
     borderRadius: borderRadius.lg,
     outline: 'none',
     transition: transitions.base,
-    backgroundColor: colors.neutral[50],
-    color: colors.neutral[900],
+    backgroundColor: colors.background.secondary,
+    color: colors.text.primary,
   };
 
   const iconStyles: React.CSSProperties = {
     position: 'absolute',
     left: spacing.md,
-    color: isFocused ? colors.primary : colors.neutral[400],
+    color: isFocused ? colors.primary : colors.text.tertiary,
     display: 'flex',
     alignItems: 'center',
     transition: transitions.base,
