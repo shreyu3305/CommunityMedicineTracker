@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Loader2, ChevronDown, AlertCircle } from 'lucide-react';
-import { colors, spacing, borderRadius, shadows } from '../styles/tokens';
+import { colors, spacing, borderRadius } from '../styles/tokens';
 import { Button } from './Button';
 
 export interface InfiniteScrollProps {
@@ -68,10 +68,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
       padding: spacing.lg,
       gap: spacing.sm
     }}>
-      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-      <span style={{ color: colors.neutral[600], fontSize: '14px' }}>
-        Loading more...
-      </span>
+      {/* <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> */}
     </div>
   );
 
@@ -397,9 +394,6 @@ export const PaginatedInfiniteScroll: React.FC<{
           gap: spacing.sm
         }}>
           <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-          <span style={{ color: colors.neutral[600], fontSize: '14px' }}>
-            Loading more...
-          </span>
         </div>
       )}
       

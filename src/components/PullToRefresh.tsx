@@ -104,7 +104,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
     if (scrollTop === 0 && currentY > startY) {
-      e.preventDefault();
+      // Don't prevent default for mouse events to allow clicks
       
       const distance = (currentY - startY) * resistance;
       setPullDistance(distance);

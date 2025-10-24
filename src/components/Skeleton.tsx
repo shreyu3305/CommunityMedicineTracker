@@ -150,44 +150,102 @@ export const SkeletonPharmacyCard: React.FC<{ className?: string }> = ({ classNa
   <div
     className={className}
     style={{
-      padding: spacing.lg,
-      background: 'white',
-      borderRadius: borderRadius.lg,
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      border: `1px solid ${colors.neutral[200]}`,
-      marginBottom: spacing.md
+      padding: spacing.xl,
+      background: colors.background.primary,
+      borderRadius: '24px',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+      border: `1px solid ${colors.border.light}`,
+      cursor: 'pointer',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      backdropFilter: 'blur(20px)',
+      color: colors.text.primary,
     }}
   >
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: spacing.md }}>
-      <div style={{ flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
-          <Skeleton width="200px" height="24px" animation="pulse" />
-          <Skeleton variant="circular" width="20px" height="20px" animation="pulse" />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, marginBottom: spacing.xs }}>
-          <Skeleton variant="circular" width="16px" height="16px" animation="pulse" />
-          <Skeleton width="250px" height="16px" animation="pulse" />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-          <Skeleton variant="circular" width="16px" height="16px" animation="pulse" />
-          <Skeleton width="150px" height="16px" animation="pulse" />
-        </div>
+    {/* Main Info Section */}
+    <div>
+      {/* Pharmacy Name and Verification */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: spacing.sm, 
+        marginBottom: spacing.xs 
+      }}>
+        <Skeleton width="180px" height="18px" animation="pulse" />
+        <Skeleton 
+          width="60px" 
+          height="20px" 
+          animation="pulse" 
+          style={{ borderRadius: '12px' }}
+        />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: spacing.sm }}>
-        <Skeleton width="50px" height="24px" animation="pulse" />
-        <Skeleton width="80px" height="20px" animation="pulse" />
-        <Skeleton width="60px" height="16px" animation="pulse" />
+      
+      {/* Address */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: spacing.xs, 
+        marginBottom: spacing.xs,
+        color: colors.neutral[600],
+        fontSize: '14px'
+      }}>
+        <Skeleton variant="circular" width="14px" height="14px" animation="pulse" />
+        <Skeleton width="220px" height="14px" animation="pulse" />
+      </div>
+      
+      {/* Phone */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: spacing.xs,
+        color: colors.neutral[600],
+        fontSize: '14px',
+        marginBottom: spacing.sm
+      }}>
+        <Skeleton variant="circular" width="14px" height="14px" animation="pulse" />
+        <Skeleton width="160px" height="14px" animation="pulse" />
+      </div>
+      
+      {/* Operating Hours */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing.xs,
+        color: colors.neutral[600],
+        fontSize: '14px',
+        marginBottom: spacing.md
+      }}>
+        <Skeleton variant="circular" width="14px" height="14px" animation="pulse" />
+        <Skeleton width="200px" height="14px" animation="pulse" />
       </div>
     </div>
+    
+    {/* Action Buttons */}
     <div style={{ 
-      display: 'flex', 
-      justifyContent: 'space-between', 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: spacing.sm,
+      marginBottom: spacing.md
+    }}>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton 
+          key={index}
+          width="100%" 
+          height="50px" 
+          animation="pulse" 
+          style={{ borderRadius: '12px' }}
+        />
+      ))}
+    </div>
+    
+    {/* View Details Link */}
+    <div style={{
+      display: 'flex',
+      justifyContent: 'flex-end',
       alignItems: 'center',
       paddingTop: spacing.md,
-      borderTop: `1px solid ${colors.neutral[200]}`
+      borderTop: `1px solid ${colors.neutral[200]}`,
     }}>
-      <Skeleton width="120px" height="16px" animation="pulse" />
-      <Skeleton width="80px" height="16px" animation="pulse" />
+      <Skeleton width="100px" height="13px" animation="pulse" />
     </div>
   </div>
 );

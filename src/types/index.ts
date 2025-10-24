@@ -1,29 +1,7 @@
 export interface Medicine {
   id: string;
   name: string;
-  genericName?: string;
-  form: 'tablet' | 'capsule' | 'syrup' | 'injection' | 'cream' | 'drops' | 'inhaler' | 'other';
-  strength?: string;
-  manufacturer?: string;
-  description?: string;
-  category?: string;
-  price?: number;
-  originalPrice?: number;
-  currency?: string;
-  dosage?: {
-    adults: string;
-    children: string;
-    elderly: string;
-  };
-  sideEffects?: string[];
-  interactions?: string[];
-  warnings?: string[];
-  storage?: string;
-  expiry?: string;
-  availability?: 'in_stock' | 'low_stock' | 'out_of_stock';
-  rating?: number;
-  reviewCount?: number;
-  images?: string[];
+  stock: 'in_stock' | 'out_of_stock' | 'low_stock';
 }
 
 export interface MedicineCategory {
@@ -46,30 +24,12 @@ export interface Pharmacy {
   isVerified: boolean;
   openHours?: OpenHours;
   logoUrl?: string;
-  distance?: number;
-  confidenceScore?: number;
-  lastUpdated?: string;
-  price?: number;
-  originalPrice?: number;
-  currency?: string;
 }
 
 export interface OpenHours {
   [key: string]: { open: string; close: string; closed?: boolean };
 }
 
-export interface AvailabilityReport {
-  id: string;
-  medicineId: string;
-  pharmacyId: string;
-  status: 'in_stock' | 'out_of_stock' | 'unknown';
-  notes?: string;
-  photoUrl?: string;
-  isVerified: boolean;
-  confidenceScore: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export interface PharmacyInventory {
   id: string;
@@ -77,7 +37,6 @@ export interface PharmacyInventory {
   medicineId: string;
   status: 'in_stock' | 'out_of_stock' | 'low_stock';
   quantity?: number;
-  price?: number;
   updatedAt: string;
 }
 
@@ -89,4 +48,4 @@ export interface User {
   avatarUrl?: string;
 }
 
-export type ViewMode = 'home' | 'search' | 'medicine' | 'pharmacy' | 'login';
+export type ViewMode = 'home' | 'search' | 'medicine' | 'pharmacy' | 'pharmacist-login' | 'pharmacist-dashboard';

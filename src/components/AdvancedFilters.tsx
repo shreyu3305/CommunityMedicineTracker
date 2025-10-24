@@ -84,14 +84,16 @@ export const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   const containerStyles: React.CSSProperties = {
     position: 'fixed',
     top: 0,
-    right: isOpen ? 0 : '-400px',
-    width: '400px',
+    right: isOpen ? 0 : '-100%',
+    width: 'min(400px, 90vw)',
+    maxWidth: '400px',
     height: '100vh',
     background: 'white',
     boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.1)',
     zIndex: 1000,
     transition: 'right 0.3s ease',
     overflowY: 'auto',
+    overflowX: 'hidden',
     padding: spacing.lg
   };
 
@@ -299,20 +301,28 @@ export const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
               <span>50km</span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(60px, 1fr))',
+            gap: spacing.xs,
+            width: '100%'
+          }}>
             {distanceOptions.map((distance) => (
               <button
                 key={distance}
                 onClick={() => handleDistanceChange(distance)}
                 style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border: `1px solid ${filters.distance === distance ? colors.primary : colors.neutral[300]}`,
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: `2px solid ${filters.distance === distance ? colors.primary : colors.neutral[300]}`,
                   background: filters.distance === distance ? colors.primary : 'transparent',
                   color: filters.distance === distance ? 'white' : colors.neutral[600],
                   fontSize: '12px',
+                  fontWeight: 600,
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center',
+                  minWidth: '60px'
                 }}
               >
                 {distance}km
@@ -327,32 +337,60 @@ export const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
             <DollarSign size={18} color={colors.neutral[600]} />
             Price Range
           </div>
-          <div style={{ display: 'flex', gap: spacing.sm, alignItems: 'center' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr auto 1fr',
+            gap: spacing.sm, 
+            alignItems: 'center',
+            width: '100%'
+          }}>
             <input
               type="number"
               placeholder="Min"
               value={filters.priceRange[0]}
               onChange={(e) => handlePriceRangeChange(0, parseInt(e.target.value) || 0)}
               style={{
-                flex: 1,
-                padding: '8px 12px',
-                border: `1px solid ${colors.neutral[300]}`,
-                borderRadius: '6px',
-                fontSize: '14px'
+                width: '100%',
+                padding: '10px 12px',
+                border: `2px solid ${colors.neutral[300]}`,
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 500,
+                outline: 'none',
+                transition: 'border-color 0.2s ease'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.neutral[300];
               }}
             />
-            <span style={{ color: colors.neutral[500] }}>to</span>
+            <span style={{ 
+              color: colors.neutral[500], 
+              fontWeight: 600,
+              fontSize: '14px'
+            }}>to</span>
             <input
               type="number"
               placeholder="Max"
               value={filters.priceRange[1]}
               onChange={(e) => handlePriceRangeChange(1, parseInt(e.target.value) || 1000)}
               style={{
-                flex: 1,
-                padding: '8px 12px',
-                border: `1px solid ${colors.neutral[300]}`,
-                borderRadius: '6px',
-                fontSize: '14px'
+                width: '100%',
+                padding: '10px 12px',
+                border: `2px solid ${colors.neutral[300]}`,
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 500,
+                outline: 'none',
+                transition: 'border-color 0.2s ease'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.neutral[300];
               }}
             />
           </div>

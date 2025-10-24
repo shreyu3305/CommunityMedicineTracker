@@ -1,45 +1,21 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Shield, Users, TrendingUp, Settings } from 'lucide-react';
+import { Search, MapPin, Pill } from 'lucide-react';
 import { Button } from '../components/Button';
-import { Input } from '../components/Input';
-import { MedicineSearch } from '../components/MedicineSearch';
-import { DarkModeToggle } from '../components/DarkModeToggle';
-import { LanguageToggle } from '../components/LanguageToggle';
-import { FontSizeAdjuster } from '../components/FontSizeAdjuster';
-import { HighContrastToggle } from '../components/HighContrastMode';
-import { TextToSpeech } from '../components/TextToSpeech';
-import { LocationError } from '../components/LocationError';
-import { SearchSuggestionsInput } from '../components/SearchSuggestions';
-import { AriaMain, AriaHeading, AriaButton } from '../components/AriaLabels';
-import { KeyboardNavigation } from '../components/KeyboardNavigation';
-import { FocusIndicators } from '../components/FocusIndicators';
-import { spacing, colors, borderRadius, shadows } from '../styles/tokens';
+import { spacing, colors } from '../styles/tokens';
 
 interface HomePageProps {
-  onSearch: (medicine: string, location: string) => void;
-  onLogout?: () => void;
+  onSearch: (medicine: string) => void;
+  onPharmacistLogin: () => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
+export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin }) => {
   const [medicineName, setMedicineName] = useState('');
   const [location, setLocation] = useState('');
-  const [showMedicineSearch, setShowMedicineSearch] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
 
   const handleSearch = () => {
     if (medicineName.trim()) {
-      onSearch(medicineName, location);
+      onSearch(medicineName);
     }
-  };
-
-  const handleMedicineSelect = (medicine: string) => {
-    setMedicineName(medicine);
-    onSearch(medicine, location);
-  };
-
-  const handleMedicineSearch = (query: string) => {
-    setMedicineName(query);
-    onSearch(query, location);
   };
 
   const containerStyles: React.CSSProperties = {
@@ -101,7 +77,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
   const heroStyles: React.CSSProperties = {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: `${spacing.xl} ${spacing.lg}`,
+    padding: `${spacing['4xl']} ${spacing.lg} ${spacing.xl} ${spacing.lg}`,
     textAlign: 'center',
     position: 'relative',
     zIndex: 2,
@@ -127,7 +103,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
   };
 
   const searchCardStyles: React.CSSProperties = {
-    maxWidth: '800px',
+    maxWidth: '1000px',
     margin: '0 auto',
     marginBottom: spacing.xl,
     background: 'rgba(255, 255, 255, 0.98)',
@@ -152,95 +128,53 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
     }} />
   );
 
-  const searchGridStyles: React.CSSProperties = {
-    display: 'grid',
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-  };
-
-  const featuresStyles: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: spacing.lg,
-    marginTop: spacing.xl,
-    marginBottom: spacing['4xl'],
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: `0 ${spacing.lg}`,
-  };
-
-
-  const iconWrapperStyles: React.CSSProperties = {
-    width: '88px',
-    height: '88px',
-    borderRadius: '24px',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto',
-    marginBottom: spacing.lg,
-    boxShadow: '0 20px 40px rgba(102, 126, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-    position: 'relative',
-    transition: 'all 0.3s ease',
-  };
-
-  // Add subtle glow effect to icons
-  const iconGlow = (
-    <div style={{
-      position: 'absolute',
-      top: '-2px',
-      left: '-2px',
-      right: '-2px',
-      bottom: '-2px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '26px',
-      opacity: 0.3,
-      filter: 'blur(8px)',
-      zIndex: -1,
-    }} />
-  );
-
-  const featureTitleStyles: React.CSSProperties = {
-    fontSize: '22px',
-    fontWeight: 700,
-    color: '#1a1a1a',
-    marginBottom: spacing.sm,
-  };
-
-  const featureDescStyles: React.CSSProperties = {
-    fontSize: '16px',
-    color: '#6b7280',
-    lineHeight: '150%',
-    fontWeight: 400,
-  };
-
-  const features = [
-    {
-      icon: <MapPin size={32} color="white" />,
-      title: 'Find Nearby',
-      description: 'Locate pharmacies near you with real-time medicine availability',
-    },
-    {
-      icon: <Users size={32} color="white" />,
-      title: 'Community Powered',
-      description: 'Help others by reporting medicine stock status in your area',
-    },
-    {
-      icon: <Shield size={32} color="white" />,
-      title: 'Verified Information',
-      description: 'Trust verified reports from pharmacists and active community members',
-    },
-    {
-      icon: <TrendingUp size={32} color="white" />,
-      title: 'Real-Time Updates',
-      description: 'Get instant notifications when medicines become available',
-    },
-  ];
 
   return (
     <div style={containerStyles}>
       {backgroundElements}
+      
+      {/* Top Right Login Button */}
+      <div style={{
+        position: 'absolute',
+        top: spacing.lg,
+        right: spacing.lg,
+        zIndex: 10
+      }}>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          icon={<Pill size={16} />}
+          onClick={onPharmacistLogin}
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.6)',
+            color: '#1a1a1a',
+            borderRadius: '12px',
+            padding: '10px 18px',
+            fontWeight: '600',
+            fontSize: '13px',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 1) 100%)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
+          }}
+        >
+          Pharmacist Login
+        </Button>
+      </div>
+      
       <div style={heroStyles}>
         <h1 style={titleStyles}>Find Medicines Around You – Instantly</h1>
         <p style={subtitleStyles}>
@@ -380,7 +314,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
           <Button 
             variant="outline" 
             size="lg" 
-            onClick={() => onSearch('', '')}
+            onClick={() => onSearch('')}
             style={{
               background: 'rgba(255, 255, 255, 0.2)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -404,229 +338,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onLogout }) => {
           >
             View Nearby Pharmacies
           </Button>
-          
-          <Button 
-            variant="outline" 
-            size="lg" 
-            icon={<Settings size={20} />}
-            onClick={() => setShowSettings(true)}
-            style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              borderRadius: '16px',
-              padding: '16px 32px',
-              fontWeight: '600',
-              backdropFilter: 'blur(10px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              zIndex: 0
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
-            }}
-          >
-            Settings
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="lg"
-            style={{
-              background: 'transparent',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              borderRadius: '16px',
-              padding: '16px 32px',
-              fontWeight: '600',
-              backdropFilter: 'blur(10px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              zIndex: 0
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
-          >
-            How It Works
-          </Button>
         </div>
       </div>
 
-      <div style={featuresStyles}>
-        {features.map((feature, index) => (
-          <div 
-            key={index} 
-            style={{
-              background: 'rgba(255, 255, 255, 0.98)',
-              borderRadius: '28px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              padding: spacing['2xl'],
-              textAlign: 'center',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
-            }}
-          >
-            <div style={iconWrapperStyles}>
-              {iconGlow}
-              {feature.icon}
-            </div>
-            <h3 style={featureTitleStyles}>{feature.title}</h3>
-            <p style={featureDescStyles}>{feature.description}</p>
-          </div>
-        ))}
-      </div>
 
-      {/* Settings Panel */}
-      {showSettings && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: spacing.lg
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: borderRadius.lg,
-            padding: spacing.xl,
-            maxWidth: '500px',
-            width: '100%',
-            boxShadow: shadows.lg
-          }}>
-            <h2 style={{
-              fontSize: '24px',
-              fontWeight: 700,
-              color: colors.neutral[800],
-              margin: 0,
-              marginBottom: spacing.lg,
-              textAlign: 'center'
-            }}>
-              Settings
-            </h2>
-            
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.lg
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: spacing.md,
-                background: colors.neutral[50],
-                borderRadius: borderRadius.md
-              }}>
-                <div>
-                  <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0, marginBottom: spacing.xs }}>
-                    Theme
-                  </h3>
-                  <p style={{ fontSize: '14px', color: colors.neutral[600], margin: 0 }}>
-                    Choose your preferred theme
-                  </p>
-                </div>
-                <DarkModeToggle variant="dropdown" />
-              </div>
-
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: spacing.md,
-                background: colors.neutral[50],
-                borderRadius: borderRadius.md
-              }}>
-                <div>
-                  <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0, marginBottom: spacing.xs }}>
-                    Language
-                  </h3>
-                  <p style={{ fontSize: '14px', color: colors.neutral[600], margin: 0 }}>
-                    Select your preferred language
-                  </p>
-                </div>
-                <LanguageToggle variant="dropdown" />
-              </div>
-
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: spacing.md,
-                background: colors.neutral[50],
-                borderRadius: borderRadius.md
-              }}>
-                <div>
-                  <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0, marginBottom: spacing.xs }}>
-                    Font Size
-                  </h3>
-                  <p style={{ fontSize: '14px', color: colors.neutral[600], margin: 0 }}>
-                    Adjust text size for better readability
-                  </p>
-                </div>
-                <FontSizeAdjuster variant="slider" />
-              </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: spacing.lg,
-              gap: spacing.md
-            }}>
-              {onLogout && (
-                <Button
-                  variant="outline"
-                  size="md"
-                  onClick={() => {
-                    setShowSettings(false);
-                    onLogout();
-                  }}
-                  style={{ color: colors.error, borderColor: colors.error }}
-                >
-                  Logout
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => setShowSettings(false)}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

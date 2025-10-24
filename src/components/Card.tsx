@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors, borderRadius, shadows, spacing, transitions } from '../styles/tokens';
+import { colors, shadows, spacing } from '../styles/tokens';
 
 interface CardProps {
   children: React.ReactNode;

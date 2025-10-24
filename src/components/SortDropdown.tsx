@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, ArrowUpDown, MapPin, Shield, DollarSign, Type } from 'lucide-react';
+import { ChevronDown, ArrowUpDown, MapPin, Shield, Type } from 'lucide-react';
 import { colors, spacing, borderRadius, shadows } from '../styles/tokens';
 
 export type SortOption = {
@@ -67,7 +67,7 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
     left: 0,
     right: 0,
     background: 'white',
-    border: `1px solid ${colors.neutral[200]}`,
+    border: `2px solid ${colors.primary}`,
     borderRadius: borderRadius.md,
     boxShadow: shadows.lg,
     zIndex: 1000,
@@ -76,7 +76,8 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
     opacity: isOpen ? 1 : 0,
     visibility: isOpen ? 'visible' : 'hidden',
     transform: isOpen ? 'translateY(0)' : 'translateY(-8px)',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s ease',
+    minHeight: isOpen ? '200px' : '0px'
   };
 
   const optionStyles: React.CSSProperties = {
@@ -111,7 +112,12 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
     <div ref={dropdownRef} style={containerStyles}>
       <div
         style={triggerStyles}
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('SortDropdown clicked, disabled:', disabled, 'isOpen:', isOpen);
+          !disabled && setIsOpen(!isOpen);
+        }}
         onMouseEnter={(e) => {
           if (!disabled) {
             e.currentTarget.style.borderColor = colors.primary;
@@ -150,7 +156,12 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
       </div>
 
       <div style={dropdownStyles}>
-        {options.map((option, index) => (
+        {isOpen && (
+          <div style={{ padding: '8px', background: '#f0f0f0', fontSize: '12px', color: '#666' }}>
+            Debug: Dropdown is open
+          </div>
+        )}
+        {options.map((option, _index) => (
           <div
             key={`${option.value}-${option.direction}`}
             style={selectedOption?.value === option.value && selectedOption?.direction === option.direction 

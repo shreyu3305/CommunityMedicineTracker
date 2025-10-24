@@ -40,6 +40,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
+  // Prefill credentials when role is selected
+  React.useEffect(() => {
+    if (selectedRole) {
+      const credentials = mockCredentials[selectedRole];
+      setValue('email', credentials.email);
+      setValue('password', credentials.password);
+    }
+  }, [selectedRole, setValue]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
@@ -78,7 +87,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   const containerStyles: React.CSSProperties = {
-    minHeight: '100vh',
+    height: '100vh',
     display: 'flex',
     background: colors.gradient.primary,
     position: 'relative',
@@ -90,7 +99,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: spacing['4xl'],
+    padding: spacing.xl,
     background: colors.gradient.primary,
     color: colors.text.inverse,
     position: 'relative',
@@ -101,59 +110,59 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: spacing['4xl'],
+    padding: spacing.xl,
     background: 'rgba(255, 255, 255, 0.95)',
     backdropFilter: 'blur(20px)',
   };
 
   const formCardStyles: React.CSSProperties = {
     width: '100%',
-    maxWidth: '480px',
+    maxWidth: '420px',
     background: 'rgba(255, 255, 255, 0.98)',
-    borderRadius: '24px',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    padding: spacing['3xl'],
+    borderRadius: '20px',
+    boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.25)',
+    padding: spacing['2xl'],
     backdropFilter: 'blur(20px)',
     border: '1px solid rgba(255, 255, 255, 0.2)',
   };
 
   const iconWrapperStyles: React.CSSProperties = {
-    width: '100px',
-    height: '100px',
+    width: '80px',
+    height: '80px',
     borderRadius: '50%',
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto',
-    marginBottom: spacing.xl,
-    boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)',
+    marginBottom: spacing.lg,
+    boxShadow: '0 15px 30px rgba(102, 126, 234, 0.3)',
   };
 
   const roleCardStyles = (isSelected: boolean): React.CSSProperties => ({
-    padding: spacing.xl,
-    borderRadius: '20px',
+    padding: spacing.lg,
+    borderRadius: '16px',
     border: `2px solid ${isSelected ? '#667eea' : 'rgba(102, 126, 234, 0.2)'}`,
     backgroundColor: isSelected ? 'rgba(102, 126, 234, 0.1)' : 'rgba(255, 255, 255, 0.8)',
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     textAlign: 'center',
-    marginBottom: spacing.lg,
-    boxShadow: isSelected ? '0 10px 30px rgba(102, 126, 234, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.1)',
+    marginBottom: spacing.md,
+    boxShadow: isSelected ? '0 8px 25px rgba(102, 126, 234, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.1)',
     backdropFilter: 'blur(10px)',
   });
 
   return (
     <div style={containerStyles}>
       <div style={leftPanelStyles}>
-        <div style={{ maxWidth: '600px', textAlign: 'center', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '500px', textAlign: 'center', position: 'relative', zIndex: 2 }}>
           <div style={iconWrapperStyles}>
-            <Pill size={56} color="white" />
+            <Pill size={40} color="white" />
           </div>
           <h1 style={{ 
-            fontSize: '48px', 
+            fontSize: '36px', 
             fontWeight: 800, 
-            marginBottom: spacing.lg, 
+            marginBottom: spacing.md, 
             lineHeight: '110%',
             background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)',
             WebkitBackgroundClip: 'text',
@@ -163,10 +172,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             Community Medicine Tracker
           </h1>
           <p style={{ 
-            fontSize: '20px', 
+            fontSize: '16px', 
             opacity: 0.95, 
-            lineHeight: '160%', 
-            marginBottom: spacing['2xl'],
+            lineHeight: '150%', 
+            marginBottom: spacing.xl,
             fontWeight: 400,
             textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}>
@@ -175,29 +184,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(2, 1fr)', 
-            gap: spacing.xl, 
-            marginTop: spacing['3xl'],
+            gap: spacing.lg, 
             background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '20px',
-            padding: spacing.xl,
+            borderRadius: '16px',
+            padding: spacing.lg,
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.2)'
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>10K+</div>
-              <div style={{ fontSize: '16px', opacity: 0.9, fontWeight: 500 }}>Active Users</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>10K+</div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: 500 }}>Active Users</div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>500+</div>
-              <div style={{ fontSize: '16px', opacity: 0.9, fontWeight: 500 }}>Pharmacies</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>500+</div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: 500 }}>Pharmacies</div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>50K+</div>
-              <div style={{ fontSize: '16px', opacity: 0.9, fontWeight: 500 }}>Reports</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>50K+</div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: 500 }}>Reports</div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '40px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>95%</div>
-              <div style={{ fontSize: '16px', opacity: 0.9, fontWeight: 500 }}>Accuracy</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, marginBottom: spacing.xs, color: '#ffffff' }}>95%</div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: 500 }}>Accuracy</div>
             </div>
           </div>
         </div>
@@ -205,12 +213,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
       <div style={rightPanelStyles}>
         <div style={formCardStyles}>
-          <div style={{ textAlign: 'center', marginBottom: spacing['2xl'] }}>
+          <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
             <h2 style={{ 
-              fontSize: '32px', 
+              fontSize: '24px', 
               fontWeight: 800, 
               color: '#1a1a1a', 
-              marginBottom: spacing.md,
+              marginBottom: spacing.sm,
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
@@ -218,7 +226,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               {isSignup ? 'Create Account' : 'Welcome Back'}
             </h2>
             <p style={{ 
-              fontSize: '16px', 
+              fontSize: '14px', 
               color: '#6b7280',
               fontWeight: 500,
               lineHeight: '150%'
@@ -226,48 +234,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               {isSignup ? 'Sign up to start helping your community' : 'Sign in to continue'}
             </p>
             
-            {!isSignup && (
-              <div style={{
-                marginTop: spacing.xl,
-                padding: spacing.lg,
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-                borderRadius: '16px',
-                border: '1px solid rgba(102, 126, 234, 0.2)',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)'
-              }}>
-                <p style={{ 
-                  fontSize: '14px', 
-                  fontWeight: 700, 
-                  color: '#374151', 
-                  marginBottom: spacing.sm,
-                  textAlign: 'center'
-                }}>
-                  Test Credentials
-                </p>
-                <div style={{ 
-                  fontSize: '13px', 
-                  color: '#6b7280', 
-                  textAlign: 'left',
-                  lineHeight: '150%'
-                }}>
-                  <div style={{ marginBottom: spacing.xs }}>
-                    <strong style={{ color: '#667eea' }}>User:</strong> user@example.com / user123
-                  </div>
-                  <div>
-                    <strong style={{ color: '#667eea' }}>Pharmacist:</strong> pharmacist@example.com / pharmacist123
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {!selectedRole ? (
             <div>
               <p style={{ 
-                fontSize: '16px', 
+                fontSize: '14px', 
                 fontWeight: 700, 
                 color: '#374151', 
-                marginBottom: spacing.lg,
+                marginBottom: spacing.md,
                 textAlign: 'center'
               }}>
                 Select your role
@@ -277,11 +252,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 style={roleCardStyles(false)}
                 onClick={() => setSelectedRole('user')}
               >
-                <User size={40} color="#667eea" style={{ margin: '0 auto', marginBottom: spacing.md }} />
-                <div style={{ fontWeight: 700, fontSize: '18px', color: '#1a1a1a', marginBottom: spacing.sm }}>
+                <User size={32} color="#667eea" style={{ margin: '0 auto', marginBottom: spacing.sm }} />
+                <div style={{ fontWeight: 700, fontSize: '16px', color: '#1a1a1a', marginBottom: spacing.xs }}>
                   Continue as User
                 </div>
-                <div style={{ fontSize: '15px', color: '#6b7280', lineHeight: '140%' }}>
+                <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '140%' }}>
                   Search medicines and contribute reports
                 </div>
               </div>
@@ -290,11 +265,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 style={roleCardStyles(false)}
                 onClick={() => setSelectedRole('pharmacist')}
               >
-                <Briefcase size={40} color="#667eea" style={{ margin: '0 auto', marginBottom: spacing.md }} />
-                <div style={{ fontWeight: 700, fontSize: '18px', color: '#1a1a1a', marginBottom: spacing.sm }}>
+                <Briefcase size={32} color="#667eea" style={{ margin: '0 auto', marginBottom: spacing.sm }} />
+                <div style={{ fontWeight: 700, fontSize: '16px', color: '#1a1a1a', marginBottom: spacing.xs }}>
                   Login as Pharmacist
                 </div>
-                <div style={{ fontSize: '15px', color: '#6b7280', lineHeight: '140%' }}>
+                <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '140%' }}>
                   Manage your pharmacy inventory
                 </div>
               </div>
@@ -350,39 +325,39 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: spacing.md, marginBottom: spacing.md }}>
+              <div style={{ display: 'flex', gap: spacing.sm, marginBottom: spacing.sm }}>
               <Button
                 type="submit"
                 variant="primary"
-                size="lg"
+                size="md"
                 style={{ 
                   flex: 1,
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   border: 'none',
-                  borderRadius: '16px',
-                  padding: '18px 24px',
-                  fontSize: '16px',
+                  borderRadius: '12px',
+                  padding: '14px 20px',
+                  fontSize: '14px',
                   fontWeight: '700',
                   color: 'white',
-                  boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                  boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   overflow: 'hidden',
                   cursor: 'pointer'
                 }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.5)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
                   }}
                   onMouseDown={(e) => {
                     e.currentTarget.style.transform = 'translateY(0) scale(0.98)';
                   }}
                   onMouseUp={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-3px) scale(1)';
+                    e.currentTarget.style.transform = 'translateY(-2px) scale(1)';
                   }}
                 >
                   <span style={{ 
@@ -391,13 +366,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px'
+                    gap: '6px'
                   }}>
                     {isLoading ? (
                       <>
                         <svg 
-                          width="16" 
-                          height="16" 
+                          width="14" 
+                          height="14" 
                           viewBox="0 0 24 24" 
                           fill="none" 
                           stroke="currentColor" 
@@ -417,8 +392,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                       <>
                         {isSignup ? 'Sign Up' : 'Sign In'}
                         <svg 
-                          width="16" 
-                          height="16" 
+                          width="14" 
+                          height="14" 
                           viewBox="0 0 24 24" 
                           fill="none" 
                           stroke="currentColor" 
@@ -437,15 +412,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 <Button
                   type="button"
                   variant="ghost"
-                  size="md"
+                  size="sm"
                   onClick={() => setSelectedRole(null)}
                   style={{
                     flex: 1,
                     background: 'rgba(102, 126, 234, 0.1)',
                     border: `2px solid rgba(102, 126, 234, 0.3)`,
-                    borderRadius: '16px',
-                    padding: '16px 24px',
-                    fontSize: '15px',
+                    borderRadius: '12px',
+                    padding: '12px 16px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#667eea',
                     transition: 'all 0.3s ease',
@@ -455,7 +430,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     e.currentTarget.style.borderColor = '#667eea';
                     e.currentTarget.style.color = '#667eea';
                     e.currentTarget.style.backgroundColor = 'rgba(102, 126, 234, 0.15)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.3)';
@@ -468,7 +443,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 </Button>
               </div>
 
-              <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
+              <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
                 <button
                   type="button"
                   onClick={() => setIsSignup(!isSignup)}
@@ -476,11 +451,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     background: 'none',
                     border: 'none',
                     color: '#667eea',
-                    fontSize: '15px',
+                    fontSize: '13px',
                     fontWeight: 600,
                     cursor: 'pointer',
                     textDecoration: 'underline',
-                    textUnderlineOffset: '4px',
+                    textUnderlineOffset: '3px',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {

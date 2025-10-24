@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { HomePage } from './pages/HomePage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { MedicineDetailsPage } from './pages/MedicineDetailsPage';
 import { PharmacyProfilePage } from './pages/PharmacyProfilePage';
-import { LoginPage } from './pages/LoginPage';
+import { PharmacistLoginPage } from './pages/PharmacistLoginPage';
+import { PharmacistDashboardPage } from './pages/PharmacistDashboardPage';
 import { ReportModal } from './components/ReportModal';
 import { SearchHistoryProvider } from './contexts/SearchHistoryContext';
 import { ThemeProvider } from './components/DarkModeToggle';
@@ -18,43 +19,27 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPharmacyId, setSelectedPharmacyId] = useState('');
-  const [selectedMedicine, setSelectedMedicine] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
-  const [userRole, setUserRole] = useState<'user' | 'pharmacist' | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Load saved authentication state on app start
+  // Load saved view state on app start
   useEffect(() => {
-    const savedUserRole = localStorage.getItem('userRole') as 'user' | 'pharmacist' | null;
     const savedView = localStorage.getItem('currentView') as ViewMode | null;
-    
-    if (savedUserRole) {
-      setUserRole(savedUserRole);
-      if (savedView) {
-        setCurrentView(savedView);
-      }
+    if (savedView) {
+      setCurrentView(savedView);
     }
-    
-    setIsLoading(false);
   }, []);
 
-  // Save authentication state to localStorage
+  // Save current view to localStorage
   useEffect(() => {
-    if (userRole) {
-      localStorage.setItem('userRole', userRole);
-      localStorage.setItem('currentView', currentView);
-    } else {
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('currentView');
-    }
-  }, [userRole, currentView]);
+    localStorage.setItem('currentView', currentView);
+  }, [currentView]);
 
   // Scroll to top when view changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentView]);
 
-  const handleSearch = (medicine: string, location: string) => {
+  const handleSearch = (medicine: string) => {
     setSearchQuery(medicine || 'Medicine');
     setCurrentView('search');
   };
@@ -65,48 +50,22 @@ function App() {
     setCurrentView('pharmacy');
   };
 
-  const handleMedicineClick = (medicine: string) => {
-    setSelectedMedicine(medicine);
-    setCurrentView('medicine');
+  const handlePharmacistLogin = () => {
+    setCurrentView('pharmacist-login');
   };
 
-  const handleLogin = (role: 'user' | 'pharmacist') => {
-    setUserRole(role);
-    setCurrentView('home');
+  const handlePharmacistLoginSubmit = (credentials: { email: string; password: string }) => {
+    console.log('Pharmacist login:', credentials);
+    // Here you would typically handle the actual login logic
+    // For now, navigate to dashboard
+    setCurrentView('pharmacist-dashboard');
   };
 
-  const handleLogout = () => {
-    setUserRole(null);
-    setCurrentView('login');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('currentView');
-  };
+
 
   const handleReportSubmit = (report: any) => {
     console.log('Report submitted:', report);
   };
-
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '18px',
-        fontWeight: 500
-      }}>
-        Loading...
-      </div>
-    );
-  }
-
-  if (!userRole) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
 
   return (
     <ErrorBoundaryProvider>
@@ -117,7 +76,7 @@ function App() {
               <SearchHistoryProvider>
                 <SkipLinkProvider>
             {currentView === 'home' && (
-              <HomePage onSearch={handleSearch} onLogout={handleLogout} />
+              <HomePage onSearch={handleSearch} onPharmacistLogin={handlePharmacistLogin} />
             )}
 
             {currentView === 'search' && (
@@ -125,12 +84,13 @@ function App() {
                 searchQuery={searchQuery}
                 onReportClick={() => setShowReportModal(true)}
                 onPharmacyClick={handlePharmacyClick}
+                onBack={() => setCurrentView('home')}
               />
             )}
 
             {currentView === 'medicine' && (
               <MedicineDetailsPage
-                medicineName={selectedMedicine || searchQuery}
+                medicineName={searchQuery}
                 onBack={() => setCurrentView('search')}
               />
             )}
@@ -139,6 +99,19 @@ function App() {
               <PharmacyProfilePage
                 pharmacyId={selectedPharmacyId}
                 onBack={() => setCurrentView('search')}
+              />
+            )}
+
+            {currentView === 'pharmacist-login' && (
+              <PharmacistLoginPage
+                onBack={() => setCurrentView('home')}
+                onLogin={handlePharmacistLoginSubmit}
+              />
+            )}
+
+            {currentView === 'pharmacist-dashboard' && (
+              <PharmacistDashboardPage
+                onBack={() => setCurrentView('home')}
               />
             )}
 
