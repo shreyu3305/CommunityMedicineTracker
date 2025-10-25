@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ArrowLeft, Mail, Lock, Building } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { spacing, borderRadius } from '../styles/tokens';
 
 interface PharmacistLoginPageProps {
   onBack: () => void;
@@ -44,49 +43,12 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
     }
   };
 
-  const containerStyles: React.CSSProperties = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   // Add animated background elements
   const backgroundElements = (
     <>
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '50px 50px',
-        animation: 'float 20s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: '20%',
-        right: '-10%',
-        width: '300px',
-        height: '300px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-        borderRadius: '50%',
-        animation: 'pulse 4s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-20%',
-        left: '10%',
-        width: '200px',
-        height: '200px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
-        borderRadius: '50%',
-        animation: 'float 15s ease-in-out infinite',
-        zIndex: 1
-      }} />
+      <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:50px_50px] animate-[float_20s_ease-in-out_infinite] z-1" />
+      <div className="absolute top-[20%] -right-[10%] w-[300px] h-[300px] bg-gradient-to-br from-white/10 to-white/5 rounded-full animate-[pulse_4s_ease-in-out_infinite] z-1" />
+      <div className="absolute -bottom-[20%] left-[10%] w-[200px] h-[200px] bg-gradient-to-br from-white/8 to-white/3 rounded-full animate-[float_15s_ease-in-out_infinite] z-1" />
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -100,110 +62,26 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
     </>
   );
 
-  const contentStyles: React.CSSProperties = {
-    maxWidth: '500px',
-    margin: '0 auto',
-    padding: spacing.xl,
-    position: 'relative',
-    zIndex: 2,
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  };
-
-  const headerStyles: React.CSSProperties = {
-    textAlign: 'center',
-    marginBottom: spacing['2xl'],
-  };
-
-  const titleStyles: React.CSSProperties = {
-    fontSize: '32px',
-    fontWeight: 800,
-    color: '#FFFFFF',
-    marginBottom: spacing.sm,
-    textShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    fontSize: '16px',
-    color: '#FFFFFF',
-    opacity: 0.9,
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-  };
-
-  const formStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.lg,
-  };
-
-  const inputGroupStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.sm,
-  };
-
-  const inputStyles: React.CSSProperties = {
-    width: '100%',
-    padding: '12px 16px',
-    borderRadius: borderRadius.lg,
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    background: 'rgba(255, 255, 255, 0.1)',
-    color: '#FFFFFF',
-    fontSize: '16px',
-    backdropFilter: 'blur(10px)',
-    outline: 'none',
-    transition: 'all 0.3s ease',
-  };
-
   return (
-    <div style={containerStyles}>
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
       {backgroundElements}
       
       {/* Back Button */}
-      <div style={{
-        position: 'absolute',
-        top: spacing.lg,
-        left: spacing.lg,
-        zIndex: 10
-      }}>
+      <div className="absolute top-lg left-lg z-10">
         <button
           onClick={onBack}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '40px',
-            height: '40px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '50%',
-            color: 'white',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            backdropFilter: 'blur(8px)',
-            outline: 'none'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-            e.currentTarget.style.transform = 'scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
+          className="flex items-center justify-center w-10 h-10 bg-white/15 border border-white/30 rounded-full text-white cursor-pointer transition-all duration-200 ease-in-out backdrop-blur-sm outline-none hover:bg-white/25 hover:scale-105"
         >
           <ArrowLeft size={18} />
         </button>
       </div>
 
-      <div style={contentStyles}>
-        <div style={headerStyles}>
-          <h1 style={titleStyles}>
+      <div className="max-w-lg mx-auto p-xl relative z-2 min-h-screen flex flex-col justify-center">
+        <div className="text-center mb-2xl">
+          <h1 className="text-3xl font-extrabold text-white mb-sm text-shadow-lg">
             {isRegisterMode ? 'Create Pharmacy Account' : 'Pharmacist Login'}
           </h1>
-          <p style={subtitleStyles}>
+          <p className="text-base text-white/90 text-shadow-md">
             {isRegisterMode 
               ? 'Register your pharmacy to start managing inventory' 
               : 'Sign in to your pharmacy account'
@@ -211,27 +89,16 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
           </p>
         </div>
 
-        <Card padding="lg" style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.3)',
-        }}>
-          <form onSubmit={handleSubmit} style={formStyles}>
+        <Card padding="lg" className="bg-white/95 backdrop-blur-xl border border-white/30 shadow-2xl">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-lg">
             {/* Pharmacy Name - FIRST in registration mode */}
             {isRegisterMode && (
-              <div style={inputGroupStyles}>
-                <div style={{ position: 'relative' }}>
+              <div className="flex flex-col gap-sm">
+                <div className="relative">
                   <Building 
                     size={20} 
                     color="#6b7280" 
-                    style={{
-                      position: 'absolute',
-                      left: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      zIndex: 1
-                    }}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 z-1"
                   />
                   <input
                     type="text"
@@ -239,30 +106,39 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
                     onChange={(e) => setPharmacyName(e.target.value)}
                     placeholder="Enter pharmacy name"
                     required
-                    style={{
-                      ...inputStyles,
-                      paddingLeft: '48px',
-                      color: '#1a1a1a',
-                      background: 'rgba(248, 250, 252, 0.8)',
-                      border: '1px solid rgba(226, 232, 240, 0.8)',
-                    }}
+                    className="w-full pl-12 pr-4 py-3 rounded-lg border border-neutral-300 bg-background-secondary/80 text-text-primary text-base outline-none transition-all duration-300 ease-in-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
                   />
                 </div>
               </div>
             )}
 
-            <div style={inputGroupStyles}>
-              <div style={{ position: 'relative' }}>
+            {/* Pharmacy Address - in registration mode */}
+            {isRegisterMode && (
+              <div className="flex flex-col gap-sm">
+                <div className="relative">
+                  <Building 
+                    size={20} 
+                    color="#6b7280" 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 z-1"
+                  />
+                  <input
+                    type="text"
+                    value={pharmacyAddress}
+                    onChange={(e) => setPharmacyAddress(e.target.value)}
+                    placeholder="Enter pharmacy address"
+                    required
+                    className="w-full pl-12 pr-4 py-3 rounded-lg border border-neutral-300 bg-background-secondary/80 text-text-primary text-base outline-none transition-all duration-300 ease-in-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-sm">
+              <div className="relative">
                 <Mail 
                   size={20} 
                   color="#6b7280" 
-                  style={{
-                    position: 'absolute',
-                    left: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1
-                  }}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 z-1"
                 />
                 <input
                   type="email"
@@ -270,29 +146,17 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  style={{
-                    ...inputStyles,
-                    paddingLeft: '48px',
-                    color: '#1a1a1a',
-                    background: 'rgba(248, 250, 252, 0.8)',
-                    border: '1px solid rgba(226, 232, 240, 0.8)',
-                  }}
+                  className="w-full pl-12 pr-4 py-3 rounded-lg border border-neutral-300 bg-background-secondary/80 text-text-primary text-base outline-none transition-all duration-300 ease-in-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
                 />
               </div>
             </div>
 
-            <div style={inputGroupStyles}>
-              <div style={{ position: 'relative' }}>
+            <div className="flex flex-col gap-sm">
+              <div className="relative">
                 <Lock 
                   size={20} 
                   color="#6b7280" 
-                  style={{
-                    position: 'absolute',
-                    left: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1
-                  }}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 z-1"
                 />
                 <input
                   type="password"
@@ -300,31 +164,19 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
-                  style={{
-                    ...inputStyles,
-                    paddingLeft: '48px',
-                    color: '#1a1a1a',
-                    background: 'rgba(248, 250, 252, 0.8)',
-                    border: '1px solid rgba(226, 232, 240, 0.8)',
-                  }}
+                  className="w-full pl-12 pr-4 py-3 rounded-lg border border-neutral-300 bg-background-secondary/80 text-text-primary text-base outline-none transition-all duration-300 ease-in-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
                 />
               </div>
             </div>
 
             {/* Confirm Password - only in registration mode */}
             {isRegisterMode && (
-              <div style={inputGroupStyles}>
-                <div style={{ position: 'relative' }}>
+              <div className="flex flex-col gap-sm">
+                <div className="relative">
                   <Lock 
                     size={20} 
                     color="#6b7280" 
-                    style={{
-                      position: 'absolute',
-                      left: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      zIndex: 1
-                    }}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 z-1"
                   />
                   <input
                     type="password"
@@ -332,13 +184,7 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
                     required
-                    style={{
-                      ...inputStyles,
-                      paddingLeft: '48px',
-                      color: '#1a1a1a',
-                      background: 'rgba(248, 250, 252, 0.8)',
-                      border: '1px solid rgba(226, 232, 240, 0.8)',
-                    }}
+                    className="w-full pl-12 pr-4 py-3 rounded-lg border border-neutral-300 bg-background-secondary/80 text-text-primary text-base outline-none transition-all duration-300 ease-in-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
                   />
                 </div>
               </div>
@@ -349,17 +195,7 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
               variant="primary"
               size="md"
               disabled={isLoading}
-              style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                border: 'none',
-                borderRadius: borderRadius.md,
-                padding: '12px 20px',
-                fontSize: '14px',
-                fontWeight: '600',
-                color: 'white',
-                transition: 'all 0.2s ease',
-                marginTop: spacing.sm,
-              }}
+              className="bg-gradient-primary border-none rounded-md px-5 py-3 text-sm font-semibold text-white transition-all duration-200 ease-in-out mt-sm"
             >
               {isLoading 
                 ? (isRegisterMode ? 'Creating Account...' : 'Signing In...') 
@@ -367,31 +203,11 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
               }
             </Button>
 
-            <div style={{
-              textAlign: 'center',
-              marginTop: spacing.md,
-              paddingTop: spacing.md,
-              borderTop: '1px solid rgba(226, 232, 240, 0.5)'
-            }}>
+            <div className="text-center mt-md pt-md border-t border-neutral-200/50">
               <button
                 type="button"
                 onClick={() => setIsRegisterMode(!isRegisterMode)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#667eea',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#5a67d8';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#667eea';
-                }}
+                className="bg-none border-none text-primary text-sm font-medium cursor-pointer underline transition-all duration-200 ease-in-out hover:text-primary-dark"
               >
                 {isRegisterMode ? 'Already have an account? Sign In' : 'Create a new Pharmacy Account'}
               </button>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Pill } from 'lucide-react';
 import { Button } from '../components/Button';
-import { spacing, colors } from '../styles/tokens';
 
 interface HomePageProps {
   onSearch: (medicine: string) => void;
@@ -18,49 +17,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
     }
   };
 
-  const containerStyles: React.CSSProperties = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   // Add animated background elements
   const backgroundElements = (
     <>
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '50px 50px',
-        animation: 'float 20s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: '20%',
-        right: '-10%',
-        width: '300px',
-        height: '300px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-        borderRadius: '50%',
-        animation: 'pulse 4s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-20%',
-        left: '10%',
-        width: '200px',
-        height: '200px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
-        borderRadius: '50%',
-        animation: 'float 15s ease-in-out infinite',
-        zIndex: 1
-      }} />
+      <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:50px_50px] animate-[float_20s_ease-in-out_infinite] z-1" />
+      <div className="absolute top-[20%] -right-[10%] w-[300px] h-[300px] bg-gradient-to-br from-white/10 to-white/5 rounded-full animate-[pulse_4s_ease-in-out_infinite] z-1" />
+      <div className="absolute -bottom-[20%] left-[10%] w-[200px] h-[200px] bg-gradient-to-br from-white/8 to-white/3 rounded-full animate-[float_15s_ease-in-out_infinite] z-1" />
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -74,198 +36,69 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
     </>
   );
 
-  const heroStyles: React.CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: `${spacing['4xl']} ${spacing.lg} ${spacing.xl} ${spacing.lg}`,
-    textAlign: 'center',
-    position: 'relative',
-    zIndex: 2,
-  };
-
-  const titleStyles: React.CSSProperties = {
-    fontSize: '56px',
-    fontWeight: 800,
-    color: '#FFFFFF', // Pure white for maximum contrast
-    marginBottom: spacing.md,
-    lineHeight: '110%',
-    textShadow: '0 4px 8px rgba(0, 0, 0, 0.3)', // Stronger shadow for better contrast
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    fontSize: '20px',
-    color: '#FFFFFF', // Pure white for better contrast
-    marginBottom: spacing.xl,
-    lineHeight: '160%',
-    fontWeight: 400,
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Stronger shadow
-    opacity: 0.95, // Slight transparency for visual hierarchy
-  };
-
-  const searchCardStyles: React.CSSProperties = {
-    maxWidth: '1000px',
-    margin: '0 auto',
-    marginBottom: spacing.xl,
-    background: 'rgba(255, 255, 255, 0.98)',
-    borderRadius: '32px',
-    boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(24px)',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    padding: spacing['2xl'],
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   // Add subtle inner glow effect
   const searchCardInner = (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
-    }} />
+    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />
   );
 
 
   return (
-    <div style={containerStyles}>
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
       {backgroundElements}
       
       {/* Top Right Login Button */}
-      <div style={{
-        position: 'absolute',
-        top: spacing.lg,
-        right: spacing.lg,
-        zIndex: 10
-      }}>
+      <div className="absolute top-lg right-lg z-10">
         <Button 
           variant="outline" 
           size="sm" 
           icon={<Pill size={16} />}
           onClick={onPharmacistLogin}
-          style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-            border: '1px solid rgba(255, 255, 255, 0.6)',
-            color: '#1a1a1a',
-            borderRadius: '12px',
-            padding: '10px 18px',
-            fontWeight: '600',
-            fontSize: '13px',
-            backdropFilter: 'blur(12px)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
-            transition: 'all 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 1) 100%)';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)';
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
-          }}
+          className="bg-gradient-to-br from-white/95 to-background-secondary/95 border border-white/60 text-text-primary rounded-xl px-4.5 py-2.5 font-semibold text-xs backdrop-blur-sm shadow-md transition-all duration-300 ease-in-out flex items-center gap-1.5 hover:from-white hover:to-background-secondary hover:-translate-y-0.5 hover:shadow-lg"
         >
           Pharmacist Login
         </Button>
       </div>
       
-      <div style={heroStyles}>
-        <h1 style={titleStyles}>Find Medicines Around You – Instantly</h1>
-        <p style={subtitleStyles}>
+      <div className="max-w-6xl mx-auto px-lg py-4xl text-center relative z-2">
+        <h1 className="text-5xl font-extrabold text-white mb-md leading-[110%] text-shadow-lg">Find Medicines Around You – Instantly</h1>
+        <p className="text-xl text-white mb-xl leading-[160%] font-normal text-shadow-md opacity-95">
           Connect with local pharmacies and community members to find the medicines you need, when you need them.
         </p>
 
-        <div className="search-card" style={searchCardStyles}>
+        <div className="max-w-4xl mx-auto mb-xl bg-white/98 rounded-3xl shadow-2xl backdrop-blur-2xl border border-white/30 p-2xl relative overflow-hidden">
           {searchCardInner}
           
           {/* Simple Single Row Search */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: spacing.md,
-            background: 'rgba(255, 255, 255, 0.95)',
-            borderRadius: '20px',
-            padding: '12px',
-            border: '1px solid rgba(226, 232, 240, 0.8)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-          }}>
+          <div className="flex items-center gap-md bg-white/95 rounded-2xl p-3 border border-neutral-200/80 shadow-sm">
             {/* Search Input */}
-            <div style={{ 
-              flex: 1, 
-              display: 'flex', 
-              alignItems: 'center',
-              background: 'rgba(248, 250, 252, 0.8)',
-              borderRadius: '12px',
-              padding: '4px 12px',
-              border: '1px solid rgba(226, 232, 240, 0.6)',
-            }}>
-              <Search size={18} color="#64748b" style={{ marginRight: '8px', flexShrink: 0 }} />
+            <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
+              <Search size={18} color="#64748b" className="mr-2 flex-shrink-0" />
               <input
                 placeholder="Search for medicines..."
                 value={medicineName}
                 onChange={(e) => setMedicineName(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: colors.text.primary,
-                  width: '100%',
-                  padding: '12px 0',
-                }}
+                className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
               />
             </div>
 
             {/* Divider */}
-            <div style={{
-              width: '1px',
-              height: '40px',
-              background: 'rgba(226, 232, 240, 0.8)',
-            }} />
+            <div className="w-px h-10 bg-neutral-200/80" />
 
             {/* Location Input */}
-            <div style={{ 
-              flex: 1, 
-              display: 'flex', 
-              alignItems: 'center',
-              background: 'rgba(248, 250, 252, 0.8)',
-              borderRadius: '12px',
-              padding: '4px 12px',
-              border: '1px solid rgba(226, 232, 240, 0.6)',
-            }}>
-              <MapPin size={18} color="#64748b" style={{ marginRight: '8px', flexShrink: 0 }} />
+            <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
+              <MapPin size={18} color="#64748b" className="mr-2 flex-shrink-0" />
               <input
                 placeholder="Location (optional)"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: colors.text.primary,
-                  width: '100%',
-                  padding: '12px 0',
-                }}
+                className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
               />
             </div>
 
             {/* Divider */}
-            <div style={{
-              width: '1px',
-              height: '40px',
-              background: 'rgba(226, 232, 240, 0.8)',
-            }} />
+            <div className="w-px h-10 bg-neutral-200/80" />
 
             {/* Search Button */}
             <Button
@@ -273,68 +106,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
               size="lg"
               onClick={handleSearch}
               icon={<Search size={18} />}
-              style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '12px 20px',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: 'white',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                transition: 'all 0.3s ease',
-                minWidth: '120px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
-              }}
+              className="bg-gradient-primary border-none rounded-xl px-5 py-3 text-base font-semibold text-white shadow-custom-lg transition-all duration-300 ease-in-out min-w-[120px] flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-custom-xl"
             >
               Search
             </Button>
           </div>
         </div>
 
-        <div style={{ 
-          display: 'flex', 
-          gap: spacing.lg, 
-          justifyContent: 'center', 
-          flexWrap: 'wrap', 
-          marginTop: spacing['4xl'],
-          position: 'relative',
-          zIndex: 0
-        }}>
+        <div className="flex gap-lg justify-center flex-wrap mt-4xl relative z-0">
           <Button 
             variant="outline" 
             size="lg" 
             onClick={() => onSearch('')}
-            style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              borderRadius: '16px',
-              padding: '16px 32px',
-              fontWeight: '600',
-              backdropFilter: 'blur(10px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              zIndex: 0
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className="bg-white/20 border-2 border-white/30 text-white rounded-2xl px-8 py-4 font-semibold backdrop-blur-lg transition-all duration-300 ease-in-out relative z-0 hover:bg-white/30 hover:-translate-y-0.5"
           >
             View Nearby Pharmacies
           </Button>

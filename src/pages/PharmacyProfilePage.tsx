@@ -6,7 +6,6 @@ import { Badge } from '../components/Badge';
 import { OperatingHours } from '../components/OperatingHours';
 import { ContactActions } from '../components/ContactActions';
 import { MedicineDetailsModal } from '../components/MedicineDetailsModal';
-import { colors, spacing, borderRadius, shadows } from '../styles/tokens';
 
 interface PharmacyProfilePageProps {
   pharmacyId: string;
@@ -44,49 +43,12 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
     { medicine: 'Aspirin 75mg', status: 'out_of_stock', lastUpdated: '2 days ago' },
   ];
 
-  const containerStyles: React.CSSProperties = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   // Add animated background elements
   const backgroundElements = (
     <>
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '50px 50px',
-        animation: 'float 20s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: '20%',
-        right: '-10%',
-        width: '300px',
-        height: '300px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-        borderRadius: '50%',
-        animation: 'pulse 4s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-20%',
-        left: '10%',
-        width: '200px',
-        height: '200px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
-        borderRadius: '50%',
-        animation: 'float 15s ease-in-out infinite',
-        zIndex: 1
-      }} />
+      <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:50px_50px] animate-[float_20s_ease-in-out_infinite] z-1" />
+      <div className="absolute top-[20%] -right-[10%] w-[300px] h-[300px] bg-gradient-to-br from-white/10 to-white/5 rounded-full animate-[pulse_4s_ease-in-out_infinite] z-1" />
+      <div className="absolute -bottom-[20%] left-[10%] w-[200px] h-[200px] bg-gradient-to-br from-white/8 to-white/3 rounded-full animate-[float_15s_ease-in-out_infinite] z-1" />
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -99,70 +61,6 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
       `}</style>
     </>
   );
-
-  const headerStyles: React.CSSProperties = {
-    background: 'transparent',
-    color: colors.text.inverse,
-    padding: spacing.xl,
-    position: 'relative',
-    zIndex: 2,
-  };
-
-  const headerContentStyles: React.CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-  };
-
-  const profileImageStyles: React.CSSProperties = {
-    width: '120px',
-    height: '120px',
-    borderRadius: borderRadius.xl,
-    backgroundColor: colors.background.primary,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '48px',
-    fontWeight: 700,
-    color: colors.primary,
-    boxShadow: shadows.xl,
-    margin: '0 auto',
-    marginBottom: spacing.lg,
-  };
-
-  const contentStyles: React.CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: spacing.lg,
-    position: 'relative',
-    zIndex: 2,
-  };
-
-  const gridStyles: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: spacing.lg,
-    marginBottom: spacing.lg,
-  };
-
-  const infoRowStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing.md,
-    padding: `${spacing.md} 0`,
-    borderBottom: `1px solid ${colors.neutral[100]}`,
-  };
-
-  const sectionTitleStyles: React.CSSProperties = {
-    fontSize: '22px',
-    fontWeight: 700,
-    color: '#1a1a1a',
-    marginBottom: spacing.lg,
-  };
-
-  const tableStyles: React.CSSProperties = {
-    width: '100%',
-    borderCollapse: 'collapse',
-  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, 'success' | 'warning' | 'error'> = {
@@ -181,45 +79,32 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
   };
 
   return (
-    <div style={containerStyles}>
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
       {backgroundElements}
-      <div style={headerStyles}>
-        <div style={headerContentStyles}>
+      <div className="bg-transparent text-text-inverse p-xl relative z-2">
+        <div className="max-w-6xl mx-auto">
           <Button
             variant="ghost"
             size="sm"
             icon={<ArrowLeft size={20} />}
             onClick={onBack}
-            style={{ color: 'white', marginBottom: spacing.lg }}
+            className="text-white mb-lg"
           >
             Back
           </Button>
 
-          <div style={profileImageStyles}>H+</div>
+          <div className="w-32 h-32 rounded-xl bg-white flex items-center justify-center text-5xl font-bold text-primary shadow-xl mx-auto mb-lg">H+</div>
 
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
-              <h1 style={{ 
-                fontSize: '36px', 
-                fontWeight: 800,
-                textShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-sm mb-md">
+              <h1 className="text-4xl font-extrabold text-shadow-lg bg-gradient-to-br from-white to-blue-50 bg-clip-text text-transparent">
                 {mockPharmacy.name}
               </h1>
               {mockPharmacy.isVerified && (
-                <CheckCircle size={32} fill="white" color={colors.primary} />
+                <CheckCircle size={32} fill="white" color="#667eea" />
               )}
             </div>
-            <p style={{ 
-              fontSize: '18px', 
-              opacity: 0.95, 
-              marginBottom: spacing.md,
-              fontWeight: 400,
-              textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-            }}>
+            <p className="text-lg opacity-95 mb-md font-normal text-shadow-md">
               {mockPharmacy.address}
             </p>
             <Badge variant="success" size="md">Open Now</Badge>
@@ -227,34 +112,34 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
         </div>
       </div>
 
-      <div style={contentStyles}>
-        <div style={gridStyles}>
+      <div className="max-w-6xl mx-auto p-lg relative z-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
           <Card padding="lg">
-            <h2 style={sectionTitleStyles}>Contact Information</h2>
+            <h2 className="text-2xl font-bold text-neutral-900 mb-lg">Contact Information</h2>
             <div>
-              <div style={infoRowStyles}>
-                <Phone size={20} color={colors.primary} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '15px', color: '#6b7280', fontWeight: 500 }}>Phone</div>
-                  <div style={{ fontSize: '17px', fontWeight: 600, color: '#1a1a1a' }}>
+              <div className="flex items-center gap-md py-md border-b border-neutral-100">
+                <Phone size={20} color="#667eea" />
+                <div className="flex-1">
+                  <div className="text-sm text-neutral-600 font-medium">Phone</div>
+                  <div className="text-base font-semibold text-neutral-900">
                     {mockPharmacy.phone}
                   </div>
                 </div>
               </div>
-              <div style={infoRowStyles}>
-                <Mail size={20} color={colors.primary} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '15px', color: '#6b7280', fontWeight: 500 }}>Email</div>
-                  <div style={{ fontSize: '17px', fontWeight: 600, color: '#1a1a1a' }}>
+              <div className="flex items-center gap-md py-md border-b border-neutral-100">
+                <Mail size={20} color="#667eea" />
+                <div className="flex-1">
+                  <div className="text-sm text-neutral-600 font-medium">Email</div>
+                  <div className="text-base font-semibold text-neutral-900">
                     {mockPharmacy.email}
                   </div>
                 </div>
               </div>
-              <div style={infoRowStyles}>
-                <MapPin size={20} color={colors.primary} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '15px', color: '#6b7280', fontWeight: 500 }}>Address</div>
-                  <div style={{ fontSize: '17px', fontWeight: 600, color: '#1a1a1a' }}>
+              <div className="flex items-center gap-md py-md border-b border-neutral-100">
+                <MapPin size={20} color="#667eea" />
+                <div className="flex-1">
+                  <div className="text-sm text-neutral-600 font-medium">Address</div>
+                  <div className="text-base font-semibold text-neutral-900">
                     {mockPharmacy.address}
                   </div>
                 </div>
@@ -262,7 +147,7 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
             </div>
             
             {/* Contact Actions */}
-            <div style={{ marginTop: spacing.lg }}>
+            <div className="mt-lg">
               <ContactActions
                 phone={mockPharmacy.phone}
                 email={mockPharmacy.email}
@@ -276,7 +161,7 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
           </Card>
 
           <Card padding="lg">
-            <h2 style={sectionTitleStyles}>Opening Hours</h2>
+            <h2 className="text-2xl font-bold text-neutral-900 mb-lg">Opening Hours</h2>
             <OperatingHours 
               hours={mockPharmacy.openHours} 
               showStatus={true}
@@ -286,33 +171,33 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
         </div>
 
         <Card padding="lg">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
-            <h2 style={sectionTitleStyles}>Current Inventory</h2>
+          <div className="flex justify-between items-center mb-lg">
+            <h2 className="text-2xl font-bold text-neutral-900">Current Inventory</h2>
           </div>
-          <table style={tableStyles}>
+          <table className="w-full border-collapse">
             <thead>
-              <tr style={{ borderBottom: `2px solid ${colors.neutral[200]}` }}>
-                <th style={{ textAlign: 'left', padding: spacing.md, fontSize: '14px', fontWeight: 600, color: colors.neutral[700] }}>
+              <tr className="border-b-2 border-neutral-200">
+                <th className="text-left p-md text-sm font-semibold text-neutral-700">
                   Medicine
                 </th>
-                <th style={{ textAlign: 'center', padding: spacing.md, fontSize: '14px', fontWeight: 600, color: colors.neutral[700] }}>
+                <th className="text-center p-md text-sm font-semibold text-neutral-700">
                   Status
                 </th>
-                <th style={{ textAlign: 'right', padding: spacing.md, fontSize: '14px', fontWeight: 600, color: colors.neutral[700] }}>
+                <th className="text-right p-md text-sm font-semibold text-neutral-700">
                   Last Updated
                 </th>
               </tr>
             </thead>
             <tbody>
               {mockInventory.map((item, index) => (
-                <tr key={index} style={{ borderBottom: `1px solid ${colors.neutral[100]}` }}>
-                  <td style={{ padding: spacing.md, fontSize: '17px', color: '#1a1a1a', fontWeight: 600 }}>
+                <tr key={index} className="border-b border-neutral-100">
+                  <td className="p-md text-base text-neutral-900 font-semibold">
                     {item.medicine}
                   </td>
-                  <td style={{ padding: spacing.md, textAlign: 'center' }}>
+                  <td className="p-md text-center">
                     {getStatusBadge(item.status)}
                   </td>
-                  <td style={{ padding: spacing.md, fontSize: '15px', color: '#6b7280', textAlign: 'right', fontWeight: 500 }}>
+                  <td className="p-md text-sm text-neutral-600 text-right font-medium">
                     {item.lastUpdated}
                   </td>
                 </tr>
@@ -322,19 +207,13 @@ export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
         </Card>
 
         {/* Map */}
-        <Card padding="none" style={{ marginTop: spacing.lg }}>
-          <div style={{
-            height: '500px',
-            borderRadius: borderRadius.lg,
-            overflow: 'hidden',
-            position: 'relative',
-            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
-          }}>
+        <Card className="mt-lg">
+          <div className="h-[500px] rounded-lg overflow-hidden relative bg-gradient-to-br from-background-secondary to-neutral-200">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBW-fSpIT-yWFeYfOF0VIBlBHuEr12o4Cs&q=${encodeURIComponent(mockPharmacy.address)}`}
               width="100%"
               height="100%"
-              style={{ border: 0 }}
+              className="border-0"
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

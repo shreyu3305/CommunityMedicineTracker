@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, CheckCircle, Plus, MessageCircle, Mail } from 'lucide-react';
 import { Card } from '../components/Card';
-import { DotsLoader } from '../components/DotsLoader';
 import { useLoading } from '../hooks/useLoading';
 import { NoResultsEmptyState, NetworkErrorEmptyState } from '../components/EmptyState';
 import { SortDropdown, pharmacySortOptions, type SortOption } from '../components/SortDropdown';
 import { InfiniteScroll } from '../components/InfiniteScroll';
 import { BottomNavigation, createMainNavigation } from '../components/BottomNavigation';
 import { FloatingActionButton, createReportActions } from '../components/FloatingActionButton';
-import { colors, spacing, borderRadius } from '../styles/tokens';
 import type { Pharmacy } from '../types';
 
 interface SearchResultsPageProps {
@@ -256,49 +254,12 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
     setSortOption(option);
   };
 
-  const containerStyles: React.CSSProperties = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   // Add animated background elements
   const backgroundElements = (
     <>
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '50px 50px',
-        animation: 'float 20s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: '20%',
-        right: '-10%',
-        width: '300px',
-        height: '300px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-        borderRadius: '50%',
-        animation: 'pulse 4s ease-in-out infinite',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-20%',
-        left: '10%',
-        width: '200px',
-        height: '200px',
-        background: 'linear-gradient(45deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
-        borderRadius: '50%',
-        animation: 'float 15s ease-in-out infinite',
-        zIndex: 1
-      }} />
+      <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:50px_50px] animate-[float_20s_ease-in-out_infinite] z-1" />
+      <div className="absolute top-[20%] -right-[10%] w-[300px] h-[300px] bg-gradient-to-br from-white/10 to-white/5 rounded-full animate-[pulse_4s_ease-in-out_infinite] z-1" />
+      <div className="absolute -bottom-[20%] left-[10%] w-[200px] h-[200px] bg-gradient-to-br from-white/8 to-white/3 rounded-full animate-[float_15s_ease-in-out_infinite] z-1" />
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -311,54 +272,6 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
       `}</style>
     </>
   );
-
-  const headerStyles: React.CSSProperties = {
-    background: 'rgba(255, 255, 255, 0.95)',
-    padding: spacing.lg,
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    backdropFilter: 'blur(20px)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-    overflow: 'visible'
-  };
-
-  const headerContentStyles: React.CSSProperties = {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-    width: '100%'
-  };
-
-  const mainContentStyles: React.CSSProperties = {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: spacing.lg,
-    minHeight: 'calc(100vh - 100px)',
-    position: 'relative',
-    zIndex: 2,
-  };
-
-  const listContainerStyles: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-    gap: spacing.md,
-    marginBottom: spacing['4xl'],
-  };
-
-
-  const fabStyles: React.CSSProperties = {
-    position: 'fixed',
-    bottom: spacing.xl,
-    right: spacing.xl,
-    zIndex: 20,
-    boxShadow: '0 20px 40px rgba(102, 126, 234, 0.4)',
-  };
 
   // Mobile navigation items
   const navigationItems = createMainNavigation(
@@ -378,103 +291,60 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
 
 
   return (
-    <div style={containerStyles}>
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
       {backgroundElements}
-      <div style={headerStyles}>
-        <div style={headerContentStyles}>
+      <div className="bg-white/95 p-lg shadow-lg sticky top-0 z-10 backdrop-blur-xl border-b border-white/20 overflow-visible">
+        <div className="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-md w-full">
           <div>
-            <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', marginBottom: spacing.xs, display: 'flex', alignItems: 'center', gap: spacing.md }}>
+            <h1 className="text-3xl font-extrabold text-neutral-900 mb-xs flex items-center gap-md">
               {onBack && (
                 <button
                   onClick={onBack}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '32px',
-                    height: '32px',
-                    background: 'transparent',
-                    border: 'none',
-                    borderRadius: '50%',
-                    color: colors.neutral[600],
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    fontSize: '18px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = colors.neutral[100];
-                    e.currentTarget.style.color = colors.neutral[800];
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = colors.neutral[600];
-                  }}
+                  className="flex items-center justify-center w-8 h-8 bg-transparent border-none rounded-full text-neutral-600 cursor-pointer transition-all duration-200 ease-in-out text-lg hover:bg-neutral-100 hover:text-neutral-800"
                 >
                   ←
                 </button>
               )}
               Results for "{searchQuery}"
             </h1>
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-              <p style={{ fontSize: '16px', color: '#6b7280', fontWeight: 500, margin: 0 }}>
+            <div className="flex items-center gap-sm">
+              <p className="text-base text-neutral-600 font-medium m-0">
                 Found {sortedPharmacies.length} pharmacies near you
               </p>
               {sortOption && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.xs,
-                  padding: `${spacing.xs} ${spacing.sm}`,
-                  background: `${colors.primary}10`,
-                  borderRadius: borderRadius.sm,
-                  fontSize: '12px',
-                  color: colors.primary,
-                  fontWeight: 500
-                }}>
+                <div className="flex items-center gap-xs px-sm py-xs bg-primary/10 rounded-sm text-xs text-primary font-medium">
                   {sortOption.icon}
                   <span>Sorted by {sortOption.label}</span>
-                  <span style={{ opacity: 0.7 }}>
+                  <span className="opacity-70">
                     {sortOption.direction === 'asc' ? '↑' : '↓'}
                   </span>
                 </div>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: spacing.md, alignItems: 'center' }}>
+          <div className="flex gap-md items-center">
             <SortDropdown
               options={pharmacySortOptions}
               selectedOption={sortOption}
               onSelect={handleSortChange}
               placeholder="Sort by"
             />
-            
-            
           </div>
         </div>
       </div>
 
-      <div style={mainContentStyles}>
+      <div className="max-w-7xl mx-auto p-lg min-h-[calc(100vh-100px)] relative z-2">
         {(
-          <InfiniteScroll
-            hasMore={sortedPharmacies.length < 50} // Mock: assume we have more data
-            isLoading={isLoading}
-            onLoadMore={() => {
-              console.log('Loading more pharmacies...');
-              // In a real app, this would load more data
-            }}
-            style={listContainerStyles}
-          >
-            {isLoading ? (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '400px',
-                width: '100%'
-              }}>
-                <DotsLoader />
-              </div>
-            ) : hasError ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mb-4xl">
+            <InfiniteScroll
+              hasMore={sortedPharmacies.length < 50} // Mock: assume we have more data
+              isLoading={isLoading}
+              onLoadMore={() => {
+                console.log('Loading more pharmacies...');
+                // In a real app, this would load more data
+              }}
+            >
+            {hasError ? (
               <NetworkErrorEmptyState onRetry={handleRetry} />
             ) : sortedPharmacies.length === 0 ? (
               <NoResultsEmptyState 
@@ -496,75 +366,32 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                 <div>
                   {/* Main Info */}
                   <div>
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: spacing.sm, 
-                      marginBottom: spacing.xs 
-                    }}>
-                      <h3 style={{ 
-                        fontSize: '18px', 
-                        fontWeight: 700, 
-                        color: colors.neutral[900],
-                        margin: 0
-                      }}>
+                    <div className="flex items-center gap-sm mb-xs">
+                      <h3 className="text-lg font-bold text-neutral-900 m-0">
                         {pharmacy.name}
                       </h3>
                       {pharmacy.isVerified && (
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: spacing.xs,
-                          background: colors.success + '15',
-                          padding: `${spacing.xs} ${spacing.sm}`,
-                          borderRadius: borderRadius.full,
-                          border: `1px solid ${colors.success}30`
-                        }}>
-                          <CheckCircle size={14} color={colors.success} />
-                          <span style={{ 
-                            fontSize: '10px', 
-                            fontWeight: 700, 
-                            color: colors.success 
-                          }}>
+                        <div className="flex items-center gap-xs bg-success/15 px-sm py-xs rounded-full border border-success/30">
+                          <CheckCircle size={14} color="#10B981" />
+                          <span className="text-xs font-bold text-success">
                             VERIFIED
                           </span>
                         </div>
                       )}
                     </div>
                     
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: spacing.xs, 
-                      marginBottom: spacing.xs,
-                      color: colors.neutral[600],
-                      fontSize: '14px'
-                    }}>
+                    <div className="flex items-center gap-xs mb-xs text-neutral-600 text-sm">
                       <MapPin size={14} />
                       <span>{pharmacy.address}</span>
                     </div>
                     
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: spacing.xs,
-                      color: colors.neutral[600],
-                      fontSize: '14px',
-                      marginBottom: spacing.sm
-                    }}>
+                    <div className="flex items-center gap-xs text-neutral-600 text-sm mb-sm">
                       <Phone size={14} />
                       <span>{pharmacy.phone}</span>
                     </div>
                     
                     {pharmacy.openHours && (
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: spacing.xs,
-                        color: colors.neutral[600],
-                        fontSize: '14px',
-                        marginBottom: spacing.md
-                      }}>
+                      <div className="flex items-center gap-xs text-neutral-600 text-sm mb-md">
                         <Clock size={14} />
                         <span>Opens Saturday at 9:00 AM</span>
                       </div>
@@ -572,42 +399,12 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                   </div>
                   
                   {/* Action Buttons Below Details */}
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: spacing.sm,
-                    marginBottom: spacing.md
-                  }}>
+                  <div className="grid grid-cols-4 gap-sm mb-md">
                     {/* Call Button */}
                     {pharmacy.phone && (
                       <button
                         onClick={() => window.open(`tel:${pharmacy.phone}`, '_self')}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: spacing.xs,
-                          padding: spacing.sm,
-                          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                          color: 'white',
-                          borderRadius: borderRadius.lg,
-                          border: 'none',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                          minHeight: '50px',
-                          justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
-                        }}
+                        className="flex flex-col items-center gap-xs p-sm bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-lg border-none text-xs font-semibold cursor-pointer transition-all duration-200 ease-in-out shadow-lg min-h-[50px] justify-center hover:-translate-y-0.5 hover:shadow-xl"
                       >
                         <Phone size={18} />
                         <span>Call</span>
@@ -624,32 +421,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                             window.open(whatsappUrl, '_blank');
                           }
                         }}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: spacing.xs,
-                          padding: spacing.sm,
-                          background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
-                          color: 'white',
-                          borderRadius: borderRadius.lg,
-                          border: 'none',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)',
-                          minHeight: '50px',
-                          justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 211, 102, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(37, 211, 102, 0.3)';
-                        }}
+                        className="flex flex-col items-center gap-xs p-sm bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg border-none text-xs font-semibold cursor-pointer transition-all duration-200 ease-in-out shadow-lg min-h-[50px] justify-center hover:-translate-y-0.5 hover:shadow-xl"
                       >
                         <MessageCircle size={18} />
                         <span>WhatsApp</span>
@@ -665,32 +437,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                           const mailtoUrl = `mailto:${pharmacy.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                           window.open(mailtoUrl, '_self');
                         }}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: spacing.xs,
-                          padding: spacing.sm,
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          color: 'white',
-                          borderRadius: borderRadius.lg,
-                          border: 'none',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                          minHeight: '50px',
-                          justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.3)';
-                        }}
+                        className="flex flex-col items-center gap-xs p-sm bg-gradient-primary text-white rounded-lg border-none text-xs font-semibold cursor-pointer transition-all duration-200 ease-in-out shadow-lg min-h-[50px] justify-center hover:-translate-y-0.5 hover:shadow-xl"
                       >
                         <Mail size={18} />
                         <span>Email</span>
@@ -704,32 +451,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                           const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.address)}`;
                           window.open(mapsUrl, '_blank');
                         }}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: spacing.xs,
-                          padding: spacing.sm,
-                          background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
-                          color: 'white',
-                          borderRadius: borderRadius.lg,
-                          border: 'none',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-                          minHeight: '50px',
-                          justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
-                        }}
+                        className="flex flex-col items-center gap-xs p-sm bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-lg border-none text-xs font-semibold cursor-pointer transition-all duration-200 ease-in-out shadow-lg min-h-[50px] justify-center hover:-translate-y-0.5 hover:shadow-xl"
                       >
                         <MapPin size={18} />
                         <span>Directions</span>
@@ -738,21 +460,16 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                   </div>
                 </div>
                 
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'center',
-                  paddingTop: spacing.md,
-                  borderTop: `1px solid ${colors.neutral[200]}`,
-                }}>
-                  <span style={{ fontSize: '13px', color: colors.primary, fontWeight: 700 }}>
+                <div className="flex justify-end items-center pt-md border-t border-neutral-200">
+                  <span className="text-sm text-primary font-bold">
                     View Details →
                   </span>
                 </div>
               </Card>
               ))
             )}
-          </InfiniteScroll>
+            </InfiniteScroll>
+          </div>
         )}
       </div>
 
@@ -765,9 +482,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
         `}
       </style>
 
-
-
-      <div style={fabStyles}>
+      <div className="fixed bottom-xl right-xl z-20 shadow-2xl">
       </div>
 
       {/* Mobile Bottom Navigation */}

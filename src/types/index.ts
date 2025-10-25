@@ -1,17 +1,9 @@
 export interface Medicine {
   id: string;
   name: string;
-  stock: 'in_stock' | 'out_of_stock' | 'low_stock';
+  quantity: number;
 }
 
-export interface MedicineCategory {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  color: string;
-  medicineCount: number;
-}
 
 export interface Pharmacy {
   id: string;
@@ -23,7 +15,6 @@ export interface Pharmacy {
   email?: string;
   isVerified: boolean;
   openHours?: OpenHours;
-  logoUrl?: string;
 }
 
 export interface OpenHours {
