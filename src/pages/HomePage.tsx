@@ -53,7 +53,32 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
           size="sm" 
           icon={<Pill size={16} />}
           onClick={onPharmacistLogin}
-          className="bg-gradient-to-br from-white/95 to-background-secondary/95 border border-white/60 text-text-primary rounded-xl px-4.5 py-2.5 font-semibold text-xs backdrop-blur-sm shadow-md transition-all duration-300 ease-in-out flex items-center gap-1.5 hover:from-white hover:to-background-secondary hover:-translate-y-0.5 hover:shadow-lg"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            border: '2px solid rgba(255, 255, 255, 0.8)',
+            color: '#4F46E5',
+            borderRadius: '12px',
+            padding: '10px 16px',
+            fontSize: '14px',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.2), 0 6px 15px rgba(0, 0, 0, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)';
+          }}
         >
           Pharmacist Login
         </Button>
@@ -65,9 +90,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
           Connect with local pharmacies and community members to find the medicines you need, when you need them.
         </p>
 
-        <div className="max-w-4xl mx-auto mb-xl bg-white/98 rounded-3xl shadow-2xl backdrop-blur-2xl border border-white/30 p-2xl relative overflow-hidden">
-          {searchCardInner}
-          
+        <div className="max-w-4xl mx-auto mb-xl">
           {/* Simple Single Row Search */}
           <div className="flex items-center gap-md bg-white/95 rounded-2xl p-3 border border-neutral-200/80 shadow-sm">
             {/* Search Input */}
@@ -106,7 +129,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
               size="lg"
               onClick={handleSearch}
               icon={<Search size={18} />}
-              className="bg-gradient-primary border-none rounded-xl px-5 py-3 text-base font-semibold text-white shadow-custom-lg transition-all duration-300 ease-in-out min-w-[120px] flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-custom-xl"
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '12px 20px',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: 'white',
+                minWidth: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.5), 0 8px 25px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4), 0 4px 12px rgba(0, 0, 0, 0.1)';
+              }}
             >
               Search
             </Button>
@@ -118,7 +164,32 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
             variant="outline" 
             size="lg" 
             onClick={() => onSearch('')}
-            className="bg-white/20 border-2 border-white/30 text-white rounded-2xl px-8 py-4 font-semibold backdrop-blur-lg transition-all duration-300 ease-in-out relative z-0 hover:bg-white/30 hover:-translate-y-0.5"
+            style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              border: '2px solid rgba(255, 255, 255, 0.6)',
+              color: '#4F46E5',
+              borderRadius: '16px',
+              padding: '16px 32px',
+              fontSize: '16px',
+              fontWeight: '600',
+              backdropFilter: 'blur(15px)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1)';
+            }}
           >
             View Nearby Pharmacies
           </Button>

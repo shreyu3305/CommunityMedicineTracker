@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Pill, Plus, Edit, Trash2, User, Menu, X, LogOut } from 'lucide-react';
 import { Badge } from '../components/Badge';
 import { AddMedicineModal, AddMedicineData } from '../components/AddMedicineModal';
@@ -17,7 +17,29 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [showAddMedicineModal, setShowAddMedicineModal] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [editingMedicine, setEditingMedicine] = useState<Medicine | null>(null);
+
+  // Handle scroll for header visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down
+        setHeaderVisible(false);
+      } else {
+        // Scrolling up
+        setHeaderVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
   const [operatingHours, setOperatingHours] = useState<{[key: string]: {open: string, close: string, closed: boolean}}>({
     monday: { open: '09:00', close: '20:00', closed: false },
     tuesday: { open: '09:00', close: '20:00', closed: false },
@@ -134,10 +156,10 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
       
       {/* Section Header */}
       <div className="text-center mb-lg">
-        <h2 className="text-3xl font-bold text-text-primary m-0 mb-sm">
+        <h2 className="text-3xl font-bold text-white m-0 mb-sm drop-shadow-lg">
           Pharmacy Profile
         </h2>
-        <p className="text-base text-neutral-600 m-0">
+        <p className="text-lg text-white/90 m-0 font-medium drop-shadow-md">
           Manage your pharmacy information and settings
         </p>
       </div>
@@ -246,9 +268,9 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
           Operating Hours
         </h3>
         
-        <div className="grid grid-cols-2 gap-md">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
           {Object.entries(operatingHours).map(([day]) => (
-            <div key={day} className="flex items-center gap-md p-lg border-2 border-neutral-100 rounded-lg bg-background-secondary transition-all duration-300 ease-in-out">
+            <div key={day} className="flex items-center gap-sm p-md border-2 border-neutral-100 rounded-lg bg-background-secondary transition-all duration-300 ease-in-out min-w-0">
               <div className="relative flex items-center justify-center w-6 h-6">
                 <input
                   type="checkbox"
@@ -284,11 +306,11 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                 )}
               </div>
               
-              <div className="text-base font-semibold text-neutral-700 capitalize min-w-[80px] flex items-center">
+              <div className="text-sm font-semibold text-neutral-700 capitalize min-w-[60px] flex items-center flex-shrink-0">
                 {day}
               </div>
               
-              <div className="flex gap-sm items-center flex-1">
+              <div className="flex gap-2 items-center flex-1 min-w-0">
                 <input
                   type="time"
                   value={operatingHours[day as keyof typeof operatingHours].open}
@@ -302,13 +324,13 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                     }));
                   }}
                   disabled={!isEditing}
-                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
+                  className={`px-2 py-1.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm text-sm w-full min-w-0 ${
                     isEditing 
                       ? 'bg-white text-neutral-700 border-neutral-300 cursor-text focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]' 
                       : 'bg-background-secondary text-neutral-500 border-neutral-300 cursor-not-allowed'
                   }`}
                 />
-                <span className="text-sm text-neutral-500 font-medium">to</span>
+                <span className="text-xs text-neutral-500 font-medium flex-shrink-0">to</span>
                 <input
                   type="time"
                   value={operatingHours[day as keyof typeof operatingHours].close}
@@ -322,7 +344,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                     }));
                   }}
                   disabled={!isEditing}
-                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
+                  className={`px-2 py-1.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm text-sm w-full min-w-0 ${
                     isEditing 
                       ? 'bg-white text-neutral-700 border-neutral-300 cursor-text focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]' 
                       : 'bg-background-secondary text-neutral-500 border-neutral-300 cursor-not-allowed'
@@ -342,10 +364,10 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
       
       {/* Section Header */}
       <div className="text-center mb-lg">
-        <h2 className="text-3xl font-bold text-text-primary m-0 mb-sm">
+        <h2 className="text-3xl font-bold text-white m-0 mb-sm drop-shadow-lg">
           Medicine Management
         </h2>
-        <p className="text-base text-neutral-600 m-0">
+        <p className="text-lg text-white/90 m-0 font-medium drop-shadow-md">
           Manage your pharmacy inventory and medicine stock
         </p>
       </div>
@@ -482,7 +504,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
   return (
     <div className="min-h-screen bg-gradient-primary relative overflow-hidden flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-[280px]' : 'w-0'} h-screen bg-white/95 backdrop-blur-lg border-r border-white/20 transition-all duration-300 ease-in-out overflow-hidden fixed top-0 left-0 z-10 flex flex-col`}>
+      <div className={`${sidebarOpen ? 'w-[280px]' : 'w-0'} h-screen bg-white/95 backdrop-blur-lg border-r border-white/20 transition-all duration-300 ease-in-out overflow-hidden fixed top-0 left-0 z-50 flex flex-col`}>
         {sidebarOpen && (
           <div className="p-lg h-full flex flex-col overflow-hidden">
             {/* Sidebar Header */}
@@ -560,7 +582,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
       {/* Main Content */}
       <div className={`flex-1 min-h-screen relative z-2 overflow-auto transition-all duration-300 ease-in-out ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         {/* Header */}
-        <div className="bg-transparent text-white p-lg fixed top-0 left-0 right-0 z-20 flex items-center justify-between backdrop-blur-lg border-b border-white/10">
+        <div className={`bg-gradient-primary text-white p-lg fixed right-0 z-20 flex items-center justify-between border-b border-white/10 transition-all duration-300 ease-in-out ${sidebarOpen ? 'left-[280px]' : 'left-0'} ${headerVisible ? 'top-0' : '-top-20'}`}>
           <div className="flex items-center gap-md">
             {!sidebarOpen && (
               <button
