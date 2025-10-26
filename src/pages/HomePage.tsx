@@ -53,7 +53,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
           size="sm" 
           icon={<Pill size={16} />}
           onClick={onPharmacistLogin}
-          className="bg-gradient-to-br from-white/95 to-background-secondary/95 border border-white/60 text-text-primary rounded-xl px-4.5 py-2.5 font-semibold text-xs backdrop-blur-sm shadow-md transition-all duration-300 ease-in-out flex items-center gap-1.5 hover:from-white hover:to-background-secondary hover:-translate-y-0.5 hover:shadow-lg"
+          className="!bg-white/95 !border-2 !border-white !text-primary rounded-xl px-4 py-2 font-semibold text-xs !shadow-xl transition-all duration-300 ease-in-out flex items-center gap-2 hover:!bg-white hover:-translate-y-0.5 backdrop-blur-sm"
         >
           Pharmacist Login
         </Button>
@@ -65,52 +65,48 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
           Connect with local pharmacies and community members to find the medicines you need, when you need them.
         </p>
 
-        <div className="max-w-4xl mx-auto mb-xl bg-white/98 rounded-3xl shadow-2xl backdrop-blur-2xl border border-white/30 p-2xl relative overflow-hidden">
-          {searchCardInner}
-          
-          {/* Simple Single Row Search */}
-          <div className="flex items-center gap-md bg-white/95 rounded-2xl p-3 border border-neutral-200/80 shadow-sm">
-            {/* Search Input */}
-            <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
-              <Search size={18} color="#64748b" className="mr-2 flex-shrink-0" />
-              <input
-                placeholder="Search for medicines..."
-                value={medicineName}
-                onChange={(e) => setMedicineName(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
-              />
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-10 bg-neutral-200/80" />
-
-            {/* Location Input */}
-            <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
-              <MapPin size={18} color="#64748b" className="mr-2 flex-shrink-0" />
-              <input
-                placeholder="Location (optional)"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
-              />
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-10 bg-neutral-200/80" />
-
-            {/* Search Button */}
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handleSearch}
-              icon={<Search size={18} />}
-              className="bg-gradient-primary border-none rounded-xl px-5 py-3 text-base font-semibold text-white shadow-custom-lg transition-all duration-300 ease-in-out min-w-[120px] flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-custom-xl"
-            >
-              Search
-            </Button>
+        {/* Simple Single Row Search */}
+        <div className="max-w-4xl mx-auto mb-xl flex items-center gap-md bg-white/95 rounded-2xl p-3 border border-neutral-200/80 shadow-sm">
+          {/* Search Input */}
+          <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
+            <Search size={18} color="#64748b" className="mr-2 flex-shrink-0" />
+            <input
+              placeholder="Search for medicines..."
+              value={medicineName}
+              onChange={(e) => setMedicineName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
+            />
           </div>
+
+          {/* Divider */}
+          <div className="w-px h-10 bg-neutral-200/80" />
+
+          {/* Location Input */}
+          <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
+            <MapPin size={18} color="#64748b" className="mr-2 flex-shrink-0" />
+            <input
+              placeholder="Location (optional)"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-10 bg-neutral-200/80" />
+
+          {/* Search Button */}
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleSearch}
+            icon={<Search size={18} />}
+            className="!bg-gradient-primary border-none rounded-xl px-5 py-3 text-base font-semibold text-white !shadow-xl transition-all duration-300 ease-in-out min-w-[120px] flex items-center gap-2 hover:-translate-y-0.5 hover:!shadow-2xl"
+          >
+            Search
+          </Button>
         </div>
 
         <div className="flex gap-lg justify-center flex-wrap mt-4xl relative z-0">
@@ -118,7 +114,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
             variant="outline" 
             size="lg" 
             onClick={() => onSearch('')}
-            className="bg-white/20 border-2 border-white/30 text-white rounded-2xl px-8 py-4 font-semibold backdrop-blur-lg transition-all duration-300 ease-in-out relative z-0 hover:bg-white/30 hover:-translate-y-0.5"
+            className="!bg-white/95 !border-2 !border-white !text-primary rounded-xl px-6 py-3 font-semibold text-sm !shadow-xl transition-all duration-300 ease-in-out relative z-0 hover:!bg-white hover:-translate-y-0.5 backdrop-blur-sm"
           >
             View Nearby Pharmacies
           </Button>

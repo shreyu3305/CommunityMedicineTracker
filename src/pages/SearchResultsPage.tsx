@@ -333,17 +333,9 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-lg min-h-[calc(100vh-100px)] relative z-2">
+      <div className="max-w-full mx-auto p-lg min-h-[calc(100vh-100px)] relative z-2">
         {(
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mb-4xl">
-            <InfiniteScroll
-              hasMore={sortedPharmacies.length < 50} // Mock: assume we have more data
-              isLoading={isLoading}
-              onLoadMore={() => {
-                console.log('Loading more pharmacies...');
-                // In a real app, this would load more data
-              }}
-            >
             {hasError ? (
               <NetworkErrorEmptyState onRetry={handleRetry} />
             ) : sortedPharmacies.length === 0 ? (
@@ -361,6 +353,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                     setSelectedPharmacy(pharmacy.id);
                     onPharmacyClick(pharmacy.id);
                   }}
+                  className="w-full"
                 >
                 {/* Compact Card Design */}
                 <div>
@@ -468,7 +461,6 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
               </Card>
               ))
             )}
-            </InfiniteScroll>
           </div>
         )}
       </div>

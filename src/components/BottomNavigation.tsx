@@ -162,7 +162,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           }}
         >
           <div style={{ position: 'relative' }}>
-            {isActive && item.activeIcon ? item.activeIcon : item.icon}
+            {active === item.id && item.activeIcon ? item.activeIcon : item.icon}
             {item.badge && item.badge > 0 && (
               <div style={getBadgeStyles(item)}>
                 {item.badge > 99 ? '99+' : item.badge}

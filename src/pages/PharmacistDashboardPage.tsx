@@ -482,7 +482,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
   return (
     <div className="min-h-screen bg-gradient-primary relative overflow-hidden flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-[280px]' : 'w-0'} h-screen bg-white/95 backdrop-blur-lg border-r border-white/20 transition-all duration-300 ease-in-out overflow-hidden fixed top-0 left-0 z-10 flex flex-col`}>
+      <div className={`${sidebarOpen ? 'w-[280px]' : 'w-0'} h-screen bg-white/95 backdrop-blur-lg border-r border-white/20 transition-all duration-300 ease-in-out overflow-hidden fixed top-0 left-0 z-30 flex flex-col`}>
         {sidebarOpen && (
           <div className="p-lg h-full flex flex-col overflow-hidden">
             {/* Sidebar Header */}
@@ -560,7 +560,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
       {/* Main Content */}
       <div className={`flex-1 min-h-screen relative z-2 overflow-auto transition-all duration-300 ease-in-out ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         {/* Header */}
-        <div className="bg-transparent text-white p-lg fixed top-0 left-0 right-0 z-20 flex items-center justify-between backdrop-blur-lg border-b border-white/10">
+        <div className={`bg-transparent text-white p-lg fixed top-0 right-0 z-40 flex items-center justify-between backdrop-blur-lg border-b border-white/10 transition-all duration-300 ease-in-out ${sidebarOpen ? 'left-[280px]' : 'left-0'}`}>
           <div className="flex items-center gap-md">
             {!sidebarOpen && (
               <button
