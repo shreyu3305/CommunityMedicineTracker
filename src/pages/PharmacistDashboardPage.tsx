@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Pill, Plus, Edit, Trash2, User, Menu, X, LogOut } from 'lucide-react';
 import { Badge } from '../components/Badge';
 import { AddMedicineModal, AddMedicineData } from '../components/AddMedicineModal';
 import type { Medicine } from '../types';
 
 interface PharmacistDashboardPageProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 type TabType = 'account' | 'medicines';
 
 export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = ({
-  onBack,
+  onBack: propOnBack,
 }) => {
+  const navigate = useNavigate();
+  const onBack = propOnBack || (() => navigate('/'));
   const [activeTab, setActiveTab] = useState<TabType>('account');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(false);

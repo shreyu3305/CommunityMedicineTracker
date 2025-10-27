@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { MedicineDetailsPage } from './pages/MedicineDetailsPage';
@@ -13,121 +14,89 @@ import { FontSizeProvider } from './components/FontSizeAdjuster';
 import { HighContrastProvider } from './components/HighContrastMode';
 import { ErrorBoundaryProvider } from './components/ErrorBoundaries';
 import { SkipLinkProvider } from './components/SkipLinks';
-import type { ViewMode } from './types';
 
-function App() {
-  const [currentView, setCurrentView] = useState<ViewMode>('home');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPharmacyId, setSelectedPharmacyId] = useState('');
+function AppContent() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showReportModal, setShowReportModal] = useState(false);
 
-  // Load saved view state on app start
-  useEffect(() => {
-    const savedView = localStorage.getItem('currentView') as ViewMode | null;
-    if (savedView) {
-      setCurrentView(savedView);
-    }
-  }, []);
-
-  // Save current view to localStorage
-  useEffect(() => {
-    localStorage.setItem('currentView', currentView);
-  }, [currentView]);
-
-  // Scroll to top when view changes
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentView]);
-
   const handleSearch = (medicine: string) => {
-    setSearchQuery(medicine || 'Medicine');
-    setCurrentView('search');
+    // Navigate to search results with query parameter
+    const query = medicine || 'Medicine';
+    navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
-  const handlePharmacyClick = (pharmacyId: string) => {
-    console.log('Pharmacy clicked:', pharmacyId);
-    setSelectedPharmacyId(pharmacyId);
-    setCurrentView('pharmacy');
+  const handlePharmacyClick = (pharmacyName: string) => {
+    console.log('Pharmacy clicked:', pharmacyName);
+    navigate(`/pharmacy/${encodeURIComponent(pharmacyName)}`);
   };
 
   const handlePharmacistLogin = () => {
-    setCurrentView('pharmacist-login');
+    navigate('/pharmacist/login');
   };
-
-  const handlePharmacistLoginSubmit = (credentials: { email: string; password: string }) => {
-    console.log('Pharmacist login:', credentials);
-    // Here you would typically handle the actual login logic
-    // For now, navigate to dashboard
-    setCurrentView('pharmacist-dashboard');
-  };
-
-
 
   const handleReportSubmit = (report: any) => {
     console.log('Report submitted:', report);
   };
 
   return (
-    <ErrorBoundaryProvider>
-      <HighContrastProvider>
-        <ThemeProvider>
-          <LanguageProvider>
-            <FontSizeProvider>
-              <SearchHistoryProvider>
-                <SkipLinkProvider>
-            {currentView === 'home' && (
-              <HomePage onSearch={handleSearch} onPharmacistLogin={handlePharmacistLogin} />
-            )}
+    <>
+      <Routes>
+        <Route 
+          path="/" 
+          element={<HomePage onSearch={handleSearch} onPharmacistLogin={handlePharmacistLogin} />} 
+        />
+        <Route 
+          path="/search" 
+          element={
+            <SearchResultsPage
+              searchQuery={searchParams.get('q') || ''}
+              onPharmacyClick={handlePharmacyClick}
+              onBack={() => navigate('/')}
+            />
+          } 
+        />
+        <Route 
+          path="/medicine/:medicineName" 
+          element={<MedicineDetailsPage />} 
+        />
+        <Route 
+          path="/pharmacy/:pharmacyName" 
+          element={<PharmacyProfilePage />} 
+        />
+        <Route path="/pharmacist/login" element={<PharmacistLoginPage />} />
+        <Route path="/pharmacist/dashboard" element={<PharmacistDashboardPage />} />
+      </Routes>
 
-            {currentView === 'search' && (
-              <SearchResultsPage
-                searchQuery={searchQuery}
-                onReportClick={() => setShowReportModal(true)}
-                onPharmacyClick={handlePharmacyClick}
-                onBack={() => setCurrentView('home')}
-              />
-            )}
+      {showReportModal && (
+        <ReportModal
+          onClose={() => setShowReportModal(false)}
+          onSubmit={handleReportSubmit}
+        />
+      )}
+    </>
+  );
+}
 
-            {currentView === 'medicine' && (
-              <MedicineDetailsPage
-                medicineName={searchQuery}
-                onBack={() => setCurrentView('search')}
-              />
-            )}
-
-            {currentView === 'pharmacy' && (
-              <PharmacyProfilePage
-                pharmacyId={selectedPharmacyId}
-                onBack={() => setCurrentView('search')}
-              />
-            )}
-
-            {currentView === 'pharmacist-login' && (
-              <PharmacistLoginPage
-                onBack={() => setCurrentView('home')}
-                onLogin={handlePharmacistLoginSubmit}
-              />
-            )}
-
-            {currentView === 'pharmacist-dashboard' && (
-              <PharmacistDashboardPage
-                onBack={() => setCurrentView('home')}
-              />
-            )}
-
-            {showReportModal && (
-              <ReportModal
-                onClose={() => setShowReportModal(false)}
-                onSubmit={handleReportSubmit}
-              />
-            )}
-                </SkipLinkProvider>
-              </SearchHistoryProvider>
-            </FontSizeProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </HighContrastProvider>
-    </ErrorBoundaryProvider>
+function App() {
+  return (
+    <BrowserRouter>
+      <ErrorBoundaryProvider>
+        <HighContrastProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              <FontSizeProvider>
+                <SearchHistoryProvider>
+                  <SkipLinkProvider>
+                    <AppContent />
+                  </SkipLinkProvider>
+                </SearchHistoryProvider>
+              </FontSizeProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </HighContrastProvider>
+      </ErrorBoundaryProvider>
+    </BrowserRouter>
   );
 }
 

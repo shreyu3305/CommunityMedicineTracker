@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, Building } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 
 interface PharmacistLoginPageProps {
-  onBack: () => void;
-  onLogin: (credentials: { email: string; password: string }) => void;
+  onBack?: () => void;
+  onLogin?: (credentials: { email: string; password: string }) => void;
 }
 
 export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
-  onBack,
-  onLogin,
+  onBack: propOnBack,
+  onLogin: propOnLogin,
 }) => {
+  const navigate = useNavigate();
+  const onBack = propOnBack || (() => navigate('/'));
+  const onLogin = propOnLogin || ((credentials) => {
+    console.log('Pharmacist login:', credentials);
+    navigate('/pharmacist/dashboard');
+  });
   const [email, setEmail] = useState('pharmacist@healthplus.com');
   const [password, setPassword] = useState('password123');
   const [isLoading, setIsLoading] = useState(false);

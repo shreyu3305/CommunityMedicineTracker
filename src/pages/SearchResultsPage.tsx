@@ -4,29 +4,24 @@ import { Card } from '../components/Card';
 import { useLoading } from '../hooks/useLoading';
 import { NoResultsEmptyState, NetworkErrorEmptyState } from '../components/EmptyState';
 import { SortDropdown, pharmacySortOptions, type SortOption } from '../components/SortDropdown';
-import { InfiniteScroll } from '../components/InfiniteScroll';
 import { BottomNavigation, createMainNavigation } from '../components/BottomNavigation';
 import { FloatingActionButton, createReportActions } from '../components/FloatingActionButton';
 import type { Pharmacy } from '../types';
 
 interface SearchResultsPageProps {
   searchQuery: string;
-  onReportClick: () => void;
-  onPharmacyClick: (pharmacyId: string) => void;
+  onPharmacyClick: (pharmacyName: string) => void;
   onBack?: () => void;
 }
 
 
 export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
   searchQuery,
-  onReportClick,
   onPharmacyClick,
   onBack,
 }) => {
-  const [selectedPharmacy, setSelectedPharmacy] = useState<string | null>(null);
-  const { isLoading, startLoading, stopLoading } = useLoading({ delay: 1000 });
+  const { startLoading, stopLoading } = useLoading({ delay: 1000 });
   const [hasError, setHasError] = useState(false);
-  const [errorType, setErrorType] = useState<'network' | 'search' | null>(null);
   const [sortOption, setSortOption] = useState<SortOption | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showBottomNav, setShowBottomNav] = useState(false);
@@ -238,7 +233,6 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
 
   const handleRetry = () => {
     setHasError(false);
-    setErrorType(null);
     startLoading('Retrying search...');
     setTimeout(() => {
       stopLoading();
@@ -349,10 +343,7 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
                 <Card
                   key={pharmacy.id}
                   padding="lg"
-                  onClick={() => {
-                    setSelectedPharmacy(pharmacy.id);
-                    onPharmacyClick(pharmacy.id);
-                  }}
+                  onClick={() => onPharmacyClick(pharmacy.name)}
                   className="w-full"
                 >
                 {/* Compact Card Design */}

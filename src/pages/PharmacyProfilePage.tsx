@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Phone, Mail, CheckCircle } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -8,19 +9,24 @@ import { ContactActions } from '../components/ContactActions';
 import { MedicineDetailsModal } from '../components/MedicineDetailsModal';
 
 interface PharmacyProfilePageProps {
-  pharmacyId: string;
-  onBack: () => void;
+  pharmacyName?: string;
+  onBack?: () => void;
 }
 
 export const PharmacyProfilePage: React.FC<PharmacyProfilePageProps> = ({
-  pharmacyId,
-  onBack,
+  pharmacyName: propPharmacyName,
+  onBack: propOnBack,
 }) => {
+  const { pharmacyName: routePharmacyName } = useParams<{ pharmacyName: string }>();
+  const navigate = useNavigate();
+  
+  const pharmacyName = routePharmacyName || propPharmacyName || '';
+  const onBack = propOnBack || (() => navigate(-1));
   const [selectedMedicine, setSelectedMedicine] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mockPharmacy = {
-    id: pharmacyId,
-    name: 'HealthPlus Pharmacy',
+    id: '1', // Default ID since we're using name-based routing
+    name: pharmacyName || 'HealthPlus Pharmacy',
     address: '123 Main Street, Downtown',
     phone: '+1 (555) 123-4567',
     email: 'contact@healthplus.com',

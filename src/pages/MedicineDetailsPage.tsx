@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, CheckCircle, History, Image } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
 
 interface MedicineDetailsPageProps {
-  medicineName: string;
-  onBack: () => void;
+  medicineName?: string;
+  onBack?: () => void;
 }
 
 export const MedicineDetailsPage: React.FC<MedicineDetailsPageProps> = ({
-  medicineName,
-  onBack,
+  medicineName: propMedicineName,
+  onBack: propOnBack,
 }) => {
+  const { medicineName: routeMedicineName } = useParams<{ medicineName: string }>();
+  const navigate = useNavigate();
+  
+  const medicineName = routeMedicineName || propMedicineName || 'Medicine';
+  const onBack = propOnBack || (() => navigate(-1));
   const [activeTab, setActiveTab] = useState<'availability' | 'history' | 'photos'>('availability');
 
 
