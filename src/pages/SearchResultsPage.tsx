@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Clock, CheckCircle, Plus, MessageCircle, Mail } from 'lucide-react';
+import { MapPin, Phone, Clock, CheckCircle, Plus, MessageCircle, Mail, ArrowLeft } from 'lucide-react';
 import { Card } from '../components/Card';
 import { useLoading } from '../hooks/useLoading';
 import { NoResultsEmptyState, NetworkErrorEmptyState } from '../components/EmptyState';
-import { SortDropdown, pharmacySortOptions, type SortOption } from '../components/SortDropdown';
 import { BottomNavigation, createMainNavigation } from '../components/BottomNavigation';
 import { FloatingActionButton, createReportActions } from '../components/FloatingActionButton';
 import type { Pharmacy } from '../types';
+import { apiClient } from '../services/api';
 
 interface SearchResultsPageProps {
   searchQuery: string;
@@ -22,19 +22,64 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
 }) => {
   const { startLoading, stopLoading } = useLoading({ delay: 1000 });
   const [hasError, setHasError] = useState(false);
-  const [sortOption, setSortOption] = useState<SortOption | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showBottomNav, setShowBottomNav] = useState(false);
   const [activeTab, setActiveTab] = useState('search');
+  const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
 
-  // Simulate loading on component mount
+  // Fetch pharmacies from API
   useEffect(() => {
-    startLoading('Searching for pharmacies...');
-    const timer = setTimeout(() => {
-      stopLoading();
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [startLoading, stopLoading]);
+    const fetchPharmacies = async () => {
+      startLoading('Searching for pharmacies...');
+      setHasError(false);
+      
+      try {
+        console.log('SearchResultsPage: Searching for:', searchQuery);
+        // If there's a search query, pass it to filter pharmacies by medicine
+        // If no query or empty query, get all pharmacies
+        const medicineQuery = (searchQuery && searchQuery.trim() !== '') ? searchQuery : undefined;
+        const response = await apiClient.getPharmacies(medicineQuery);
+        
+        console.log('SearchResultsPage: Response:', response);
+        console.log('SearchResultsPage: Response ok?', response.ok);
+        console.log('SearchResultsPage: Response data?', response.data);
+        console.log('SearchResultsPage: Response data length?', response.data?.length);
+        
+        if (response.ok) {
+          // Handle both array and non-array responses
+          const dataArray = Array.isArray(response.data) ? response.data : (response.data ? [response.data] : []);
+          
+          console.log('SearchResultsPage: Data array length:', dataArray.length);
+          
+          // Transform backend data to frontend format
+          const transformedPharmacies: Pharmacy[] = dataArray.map((pharmacy: any) => ({
+            id: pharmacy._id || pharmacy.id,
+            name: pharmacy.name,
+            address: pharmacy.address,
+            latitude: pharmacy.latitude,
+            longitude: pharmacy.longitude,
+            phone: pharmacy.phone,
+            email: pharmacy.email,
+            isVerified: pharmacy.isVerified || false,
+            openHours: pharmacy.openHours || {},
+          }));
+          
+          console.log('SearchResultsPage: Transformed pharmacies:', transformedPharmacies);
+          setPharmacies(transformedPharmacies);
+        } else {
+          console.error('SearchResultsPage: Response not ok:', response.error);
+          setHasError(true);
+        }
+      } catch (error) {
+        console.error('Error fetching pharmacies:', error);
+        setHasError(true);
+      } finally {
+        stopLoading();
+      }
+    };
+
+    fetchPharmacies();
+  }, [searchQuery, startLoading, stopLoading]);
 
   // Mobile detection
   useEffect(() => {
@@ -49,203 +94,44 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const mockPharmacies: Pharmacy[] = [
-    {
-      id: '1',
-      name: 'CVS Pharmacy',
-      address: 'Times Square, 42nd Street, New York, NY',
-      latitude: 40.7580,
-      longitude: -73.9855,
-      phone: '+1 (212) 555-0123',
-      email: 'contact@cvspharmacy.com',
-      isVerified: true,
-      openHours: {
-        monday: { open: '08:00', close: '22:00' },
-        tuesday: { open: '08:00', close: '22:00' },
-        wednesday: { open: '08:00', close: '22:00' },
-        thursday: { open: '08:00', close: '22:00' },
-        friday: { open: '08:00', close: '22:00' },
-        saturday: { open: '09:00', close: '21:00' },
-        sunday: { open: '10:00', close: '20:00' }
-      }
-    },
-    {
-      id: '2',
-      name: 'Walgreens',
-      address: '5th Avenue, Manhattan, New York, NY',
-      latitude: 40.7505,
-      longitude: -73.9934,
-      phone: '+1 (212) 555-0456',
-      email: 'info@walgreens.com',
-      isVerified: true,
-      openHours: {
-        monday: { open: '07:00', close: '23:00' },
-        tuesday: { open: '07:00', close: '23:00' },
-        wednesday: { open: '07:00', close: '23:00' },
-        thursday: { open: '07:00', close: '23:00' },
-        friday: { open: '07:00', close: '23:00' },
-        saturday: { open: '08:00', close: '22:00' },
-        sunday: { open: '09:00', close: '21:00' }
-      }
-    },
-    {
-      id: '3',
-      name: 'Rite Aid',
-      address: 'Broadway, Upper West Side, New York, NY',
-      latitude: 40.7831,
-      longitude: -73.9712,
-      phone: '+1 (212) 555-0789',
-      email: 'support@riteaid.com',
-      isVerified: true,
-      openHours: {
-        monday: { open: '08:30', close: '21:30' },
-        tuesday: { open: '08:30', close: '21:30' },
-        wednesday: { open: '08:30', close: '21:30' },
-        thursday: { open: '08:30', close: '21:30' },
-        friday: { open: '08:30', close: '21:30' },
-        saturday: { open: '09:00', close: '20:00' },
-        sunday: { open: '10:00', close: '19:00' }
-      }
-    },
-    {
-      id: '4',
-      name: 'Duane Reade',
-      address: 'Madison Avenue, Midtown, New York, NY',
-      latitude: 40.7614,
-      longitude: -73.9776,
-      phone: '+1 (212) 555-0321',
-      email: 'info@duanereade.com',
-      isVerified: true,
-      openHours: {
-        monday: { open: '08:00', close: '22:00' },
-        tuesday: { open: '08:00', close: '22:00' },
-        wednesday: { open: '08:00', close: '22:00' },
-        thursday: { open: '08:00', close: '22:00' },
-        friday: { open: '08:00', close: '22:00' },
-        saturday: { open: '09:00', close: '21:00' },
-        sunday: { open: '10:00', close: '20:00' }
-      }
-    },
-    {
-      id: '5',
-      name: 'Apollo Pharmacy',
-      address: 'Lexington Avenue, Upper East Side, New York, NY',
-      latitude: 40.7736,
-      longitude: -73.9566,
-      phone: '+1 (212) 555-0654',
-      email: 'contact@apollopharmacy.com',
-      isVerified: false,
-      openHours: {
-        monday: { open: '09:00', close: '18:00' },
-        tuesday: { open: '09:00', close: '18:00' },
-        wednesday: { open: '09:00', close: '18:00' },
-        thursday: { open: '09:00', close: '18:00' },
-        friday: { open: '09:00', close: '18:00' },
-        saturday: { open: '10:00', close: '16:00' },
-        sunday: { open: '09:00', close: '16:00', closed: true }
-      }
-    },
-    {
-      id: '6',
-      name: 'MedPlus Pharmacy',
-      address: 'Park Avenue, Midtown East, New York, NY',
-      latitude: 40.7505,
-      longitude: -73.9934,
-      phone: '+1 (212) 555-0987',
-      email: 'support@medplus.com',
-      isVerified: true,
-      openHours: {
-        monday: { open: '07:30', close: '22:30' },
-        tuesday: { open: '07:30', close: '22:30' },
-        wednesday: { open: '07:30', close: '22:30' },
-        thursday: { open: '07:30', close: '22:30' },
-        friday: { open: '07:30', close: '22:30' },
-        saturday: { open: '08:00', close: '21:00' },
-        sunday: { open: '09:00', close: '20:00' }
-      }
-    },
-    {
-      id: '7',
-      name: 'Health Plus',
-      address: 'Brooklyn Bridge, Brooklyn, NY',
-      latitude: 40.7061,
-      longitude: -73.9969,
-      phone: '+1 (718) 555-0123',
-      email: 'info@healthplus.com',
-      isVerified: false,
-      openHours: {
-        monday: { open: '08:00', close: '20:00' },
-        tuesday: { open: '08:00', close: '20:00' },
-        wednesday: { open: '08:00', close: '20:00' },
-        thursday: { open: '08:00', close: '20:00' },
-        friday: { open: '08:00', close: '20:00' },
-        saturday: { open: '09:00', close: '18:00' },
-        sunday: { open: '09:00', close: '16:00', closed: true }
-      }
-    },
-    {
-      id: '8',
-      name: 'Quick Meds',
-      address: 'Queens Boulevard, Queens, NY',
-      latitude: 40.7282,
-      longitude: -73.7949,
-      phone: '+1 (718) 555-0456',
-      isVerified: true,
-      openHours: {
-        monday: { open: '06:00', close: '24:00' },
-        tuesday: { open: '06:00', close: '24:00' },
-        wednesday: { open: '06:00', close: '24:00' },
-        thursday: { open: '06:00', close: '24:00' },
-        friday: { open: '06:00', close: '24:00' },
-        saturday: { open: '06:00', close: '24:00' },
-        sunday: { open: '06:00', close: '24:00' }
-      }
-    },
-  ];
-
-  // Filter pharmacies based on distance only
-  const filteredPharmacies = mockPharmacies.filter(() => {
-    return true;
-  });
-
-  // Sort pharmacies based on selected sort option
-  const sortedPharmacies = [...filteredPharmacies].sort((a, b) => {
-    if (!sortOption) return 0;
-
-    let aValue: any, bValue: any;
-
-    switch (sortOption.value) {
-      case 'name':
-        aValue = a.name.toLowerCase();
-        bValue = b.name.toLowerCase();
-        break;
-      default:
-        return 0;
-    }
-
-    if (sortOption.direction === 'asc') {
-      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-    } else {
-      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
-    }
-  });
+  // Note: Backend already filters pharmacies by medicine name, so we don't need to filter again here
+  // If no search query, show all pharmacies. If there's a query, backend returns only pharmacies with that medicine.
+  const filteredPharmacies = pharmacies;
 
 
-  const handleRetry = () => {
+  const handleRetry = async () => {
     setHasError(false);
     startLoading('Retrying search...');
-    setTimeout(() => {
+    
+    try {
+      const response = await apiClient.getPharmacies();
+      if (response.ok && response.data) {
+        const transformedPharmacies: Pharmacy[] = response.data.map((pharmacy: any) => ({
+          id: pharmacy._id || pharmacy.id,
+          name: pharmacy.name,
+          address: pharmacy.address,
+          latitude: pharmacy.latitude,
+          longitude: pharmacy.longitude,
+          phone: pharmacy.phone,
+          email: pharmacy.email,
+          isVerified: pharmacy.isVerified || false,
+          openHours: pharmacy.openHours || {},
+        }));
+        setPharmacies(transformedPharmacies);
+      } else {
+        setHasError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching pharmacies:', error);
+      setHasError(true);
+    } finally {
       stopLoading();
-    }, 1500);
+    }
   };
 
   const handleClearSearch = () => {
     // This would typically navigate back to home or clear the search
     console.log('Clearing search');
-  };
-
-  const handleSortChange = (option: SortOption) => {
-    setSortOption(option);
   };
 
   // Add animated background elements
@@ -287,42 +173,41 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
   return (
     <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
       {backgroundElements}
-      <div className="bg-white/95 p-lg shadow-lg sticky top-0 z-10 backdrop-blur-xl border-b border-white/20 overflow-visible">
-        <div className="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-md w-full">
-          <div>
-            <h1 className="text-3xl font-extrabold text-neutral-900 mb-xs flex items-center gap-md">
-              {onBack && (
-                <button
-                  onClick={onBack}
-                  className="flex items-center justify-center w-8 h-8 bg-transparent border-none rounded-full text-neutral-600 cursor-pointer transition-all duration-200 ease-in-out text-lg hover:bg-neutral-100 hover:text-neutral-800"
-                >
-                  ←
-                </button>
-              )}
-              Results for "{searchQuery}"
-            </h1>
-            <div className="flex items-center gap-sm">
-              <p className="text-base text-neutral-600 font-medium m-0">
-                Found {sortedPharmacies.length} pharmacies near you
+      <div className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-lg py-lg">
+          <div className="flex items-center gap-lg">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="group flex items-center justify-center w-11 h-11 bg-white/15 hover:bg-white/25 border border-white/30 rounded-full text-white cursor-pointer transition-all duration-300 ease-in-out backdrop-blur-sm flex-shrink-0 hover:scale-105 hover:shadow-xl hover:shadow-white/25 hover:border-white/40 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"
+                aria-label="Go back"
+                title="Go back"
+              >
+                <ArrowLeft 
+                  size={20} 
+                  strokeWidth={2.5} 
+                  className="transition-transform duration-300 group-hover:-translate-x-0.5" 
+                />
+              </button>
+            )}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-xs truncate drop-shadow-sm leading-tight">
+                {searchQuery && searchQuery.trim() !== '' ? (
+                  <>
+                    Results for{' '}
+                    <span className="text-yellow-200 font-semibold">"{searchQuery}"</span>
+                  </>
+                ) : (
+                  'All Pharmacies'
+                )}
+              </h1>
+              <p className="text-sm md:text-base text-white/80 font-medium m-0">
+                <span className="font-semibold text-white">{filteredPharmacies.length}</span>{' '}
+                {searchQuery && searchQuery.trim() !== '' 
+                  ? 'pharmacy' + (filteredPharmacies.length !== 1 ? 'ies' : '') + ' found' 
+                  : 'pharmacy' + (filteredPharmacies.length !== 1 ? 'ies' : '')}
               </p>
-              {sortOption && (
-                <div className="flex items-center gap-xs px-sm py-xs bg-primary/10 rounded-sm text-xs text-primary font-medium">
-                  {sortOption.icon}
-                  <span>Sorted by {sortOption.label}</span>
-                  <span className="opacity-70">
-                    {sortOption.direction === 'asc' ? '↑' : '↓'}
-                  </span>
-                </div>
-              )}
             </div>
-          </div>
-          <div className="flex gap-md items-center">
-            <SortDropdown
-              options={pharmacySortOptions}
-              selectedOption={sortOption}
-              onSelect={handleSortChange}
-              placeholder="Sort by"
-            />
           </div>
         </div>
       </div>
@@ -332,14 +217,14 @@ export const SearchResultsPage: React.FC<SearchResultsPageProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mb-4xl">
             {hasError ? (
               <NetworkErrorEmptyState onRetry={handleRetry} />
-            ) : sortedPharmacies.length === 0 ? (
+            ) : filteredPharmacies.length === 0 ? (
               <NoResultsEmptyState 
                 searchQuery={searchQuery}
                 onClearSearch={handleClearSearch}
                 onRetry={handleRetry}
               />
             ) : (
-              sortedPharmacies.map((pharmacy) => (
+              filteredPharmacies.map((pharmacy) => (
                 <Card
                   key={pharmacy.id}
                   padding="lg"

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Pill, Plus, Edit, Trash2, User, Menu, X, LogOut } from 'lucide-react';
 import { Badge } from '../components/Badge';
 import { AddMedicineModal, AddMedicineData } from '../components/AddMedicineModal';
 import type { Medicine } from '../types';
+import { apiClient } from '../services/api';
 
 interface PharmacistDashboardPageProps {
   onBack?: () => void;
@@ -30,71 +31,133 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
     saturday: { open: '10:00', close: '18:00', closed: false },
     sunday: { open: '09:00', close: '18:00', closed: false }
   });
-  const [medicines, setMedicines] = useState<Medicine[]>([
-    {
-      id: '1',
-      name: 'Paracetamol 500mg',
-      quantity: 150
-    },
-    {
-      id: '2',
-      name: 'Ibuprofen 400mg',
-      quantity: 89
-    },
-    {
-      id: '3',
-      name: 'Amoxicillin 250mg',
-      quantity: 12
-    },
-    {
-      id: '4',
-      name: 'Aspirin 75mg',
-      quantity: 0
-    }
-  ]);
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [pharmacyData, setPharmacyData] = useState<any>(null);
+  const [pharmacyId, setPharmacyId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Form state for editing pharmacy
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    isVerified: false,
+  });
 
-  // Mock pharmacy data (same as what users see)
-  const pharmacyData = {
-    id: '1',
-    name: 'HealthPlus Pharmacy',
-    address: '123 Main Street, Downtown',
-    phone: '+1 (555) 123-4567',
-    email: 'contact@healthplus.com',
-    isVerified: true,
-    openHours: {
-      monday: { open: '09:00', close: '20:00' },
-      tuesday: { open: '09:00', close: '20:00' },
-      wednesday: { open: '09:00', close: '20:00' },
-      thursday: { open: '09:00', close: '20:00' },
-      friday: { open: '09:00', close: '20:00' },
-      saturday: { open: '10:00', close: '18:00' },
-      sunday: { open: '09:00', close: '18:00', closed: true }
-    },
-  };
+  // Check authentication and fetch data
+  useEffect(() => {
+    const loadData = async () => {
+      if (!apiClient.isAuthenticated()) {
+        navigate('/pharmacist/login');
+        return;
+      }
+
+      const user = apiClient.getCurrentUser();
+      const userPharmacyId = user?.pharmacyId;
+      
+      if (userPharmacyId) {
+        setPharmacyId(userPharmacyId);
+      } else {
+        // If user doesn't have pharmacyId, try to refresh user data or show error
+        console.warn('User does not have pharmacyId');
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      
+      try {
+        // Fetch medicines for this pharmacist's pharmacy
+        const medicinesResponse = await apiClient.getMedicines(userPharmacyId);
+        if (medicinesResponse.ok && medicinesResponse.data) {
+          const transformedMedicines: Medicine[] = medicinesResponse.data.map((med: any) => ({
+            id: med._id || med.id,
+            name: med.name,
+            quantity: med.quantity || 0,
+          }));
+          setMedicines(transformedMedicines);
+        }
+
+        // Fetch pharmacy data
+        if (userPharmacyId) {
+          const pharmacyResponse = await apiClient.getPharmacyById(userPharmacyId);
+          if (pharmacyResponse.ok && pharmacyResponse.data) {
+            setPharmacyData(pharmacyResponse.data);
+            // Initialize form data
+            setFormData({
+              name: pharmacyResponse.data.name || '',
+              phone: pharmacyResponse.data.phone || '',
+              email: pharmacyResponse.data.email || '',
+              address: pharmacyResponse.data.address || '',
+              isVerified: pharmacyResponse.data.isVerified || false,
+            });
+            if (pharmacyResponse.data.openHours) {
+              setOperatingHours(pharmacyResponse.data.openHours);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [navigate]);
 
 
 
   // Handle adding/editing medicine
   const handleAddMedicine = async (medicineData: AddMedicineData) => {
-    if (editingMedicine) {
-      // Update existing medicine
-      setMedicines(prev => prev.map(med => 
-        med.id === editingMedicine.id 
-          ? { ...med, name: medicineData.name, quantity: medicineData.quantity, lastUpdated: new Date().toISOString() }
-          : med
-      ));
-      console.log('Medicine updated:', { ...editingMedicine, ...medicineData });
-      setEditingMedicine(null);
-    } else {
-      // Add new medicine
-      const newMedicine: Medicine = {
-        id: Date.now().toString(),
-        name: medicineData.name,
-        quantity: medicineData.quantity
-      };
-
-      setMedicines(prev => [...prev, newMedicine]);
-      console.log('Medicine added:', newMedicine);
+    try {
+      if (editingMedicine) {
+        // Update existing medicine
+        const response = await apiClient.updateMedicine(editingMedicine.id, {
+          name: medicineData.name,
+          quantity: medicineData.quantity,
+        });
+        
+        if (response.ok && response.data) {
+          setMedicines(prev => prev.map(med => 
+            med.id === editingMedicine.id 
+              ? { ...med, name: medicineData.name, quantity: medicineData.quantity }
+              : med
+          ));
+          setEditingMedicine(null);
+          setShowAddMedicineModal(false);
+        } else {
+          alert(response.error?.message || 'Failed to update medicine');
+        }
+      } else {
+        // Add new medicine - ensure pharmacyId is set
+        if (!pharmacyId) {
+          alert('Pharmacy ID not found. Please log in again.');
+          return;
+        }
+        
+        const response = await apiClient.createMedicine({
+          name: medicineData.name,
+          quantity: medicineData.quantity,
+          pharmacyId: pharmacyId,
+        });
+        
+        if (response.ok && response.data) {
+          const newMedicine: Medicine = {
+            id: response.data._id || response.data.id,
+            name: response.data.name,
+            quantity: response.data.quantity || 0,
+          };
+          setMedicines(prev => [...prev, newMedicine]);
+          setShowAddMedicineModal(false);
+        } else {
+          alert(response.error?.message || 'Failed to create medicine');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving medicine:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 
@@ -108,10 +171,72 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
   };
 
   // Handle deleting medicine
-  const handleDeleteMedicine = (medicineId: string) => {
-    if (window.confirm('Are you sure you want to delete this medicine?')) {
-      setMedicines(prev => prev.filter(med => med.id !== medicineId));
-      console.log('Medicine deleted:', medicineId);
+  const handleDeleteMedicine = async (medicineId: string) => {
+    if (!window.confirm('Are you sure you want to delete this medicine?')) {
+      return;
+    }
+
+    try {
+      const response = await apiClient.deleteMedicine(medicineId);
+      if (response.ok) {
+        setMedicines(prev => prev.filter(med => med.id !== medicineId));
+      } else {
+        alert(response.error?.message || 'Failed to delete medicine');
+      }
+    } catch (error) {
+      console.error('Error deleting medicine:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    apiClient.logout();
+    navigate('/');
+  };
+
+  // Handle saving pharmacy profile
+  const handleSaveProfile = async () => {
+    if (!pharmacyId) {
+      alert('Pharmacy ID not found. Please log in again.');
+      return;
+    }
+
+    try {
+      const updateData = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+        isVerified: formData.isVerified,
+        openHours: operatingHours,
+      };
+
+      const response = await apiClient.updatePharmacy(pharmacyId, updateData);
+      
+      if (response.ok && response.data) {
+        // Update local pharmacy data
+        setPharmacyData(response.data);
+        setIsEditing(false);
+        alert('Pharmacy profile updated successfully!');
+        
+        // Refresh the pharmacy data
+        const pharmacyResponse = await apiClient.getPharmacyById(pharmacyId);
+        if (pharmacyResponse.ok && pharmacyResponse.data) {
+          setPharmacyData(pharmacyResponse.data);
+          setFormData({
+            name: pharmacyResponse.data.name || '',
+            phone: pharmacyResponse.data.phone || '',
+            email: pharmacyResponse.data.email || '',
+            address: pharmacyResponse.data.address || '',
+            isVerified: pharmacyResponse.data.isVerified || false,
+          });
+        }
+      } else {
+        alert(response.error?.message || 'Failed to update pharmacy profile');
+      }
+    } catch (error) {
+      console.error('Error saving pharmacy profile:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 
@@ -137,17 +262,17 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
       
       {/* Section Header */}
       <div className="text-center mb-lg">
-        <h2 className="text-3xl font-bold text-text-primary m-0 mb-sm">
+        <h2 className="text-3xl font-bold text-white m-0 mb-sm">
           Pharmacy Profile
         </h2>
-        <p className="text-base text-neutral-600 m-0">
+        <p className="text-base text-white/90 m-0">
           Manage your pharmacy information and settings
         </p>
       </div>
 
       {/* Basic Information Section */}
       <div className="bg-white rounded-xl p-xl shadow-custom-md border border-black/5">
-        <h3 className="text-xl font-semibold text-text-primary mb-lg border-b-2 border-primary pb-sm">
+        <h3 className="text-xl font-semibold text-neutral-900 mb-lg border-b-2 border-primary pb-sm">
           Basic Information
         </h3>
         
@@ -159,7 +284,8 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
             <input
               type="text"
               placeholder="Enter pharmacy name"
-              defaultValue={pharmacyData.name}
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               disabled={!isEditing}
               className={`w-full px-4 py-3.5 rounded-lg border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
                 isEditing 
@@ -176,7 +302,8 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
             <input
               type="tel"
               placeholder="Enter phone number"
-              defaultValue={pharmacyData.phone}
+              value={formData.phone}
+              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
               disabled={!isEditing}
               className={`w-full px-4 py-3.5 rounded-lg border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
                 isEditing 
@@ -193,7 +320,8 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
             <input
               type="email"
               placeholder="Enter email address"
-              defaultValue={pharmacyData.email}
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               disabled={!isEditing}
               className={`w-full px-4 py-3.5 rounded-lg border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
                 isEditing 
@@ -209,7 +337,8 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
             }`}>
               <input
                 type="checkbox"
-                defaultChecked={pharmacyData.isVerified}
+                checked={formData.isVerified}
+                onChange={(e) => setFormData(prev => ({ ...prev, isVerified: e.target.checked }))}
                 disabled={!isEditing}
                 className={`w-5 h-5 cursor-pointer appearance-none bg-white border-2 border-neutral-300 rounded-md outline-none transition-all duration-200 ease-in-out shadow-custom-sm ${
                   isEditing ? 'cursor-pointer' : 'cursor-not-allowed'
@@ -230,7 +359,8 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
           </label>
           <textarea
             placeholder="Enter complete address"
-            defaultValue={pharmacyData.address}
+            value={formData.address}
+            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
             rows={3}
             disabled={!isEditing}
             className={`w-full px-4 py-3.5 rounded-lg border-2 transition-all duration-300 ease-in-out outline-none resize-none shadow-custom-sm ${
@@ -244,15 +374,15 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
 
 
       {/* Operating Hours Section */}
-      <div className="bg-white rounded-xl p-xl shadow-custom-md border border-black/5">
-        <h3 className="text-xl font-semibold text-text-primary mb-lg border-b-2 border-primary pb-sm">
+      <div className="bg-white rounded-xl p-xl shadow-custom-md border border-black/5 overflow-hidden">
+        <h3 className="text-xl font-semibold text-neutral-900 mb-lg border-b-2 border-primary pb-sm">
           Operating Hours
         </h3>
         
-        <div className="grid grid-cols-2 gap-md">
+        <div className="flex flex-col gap-md w-full">
           {Object.entries(operatingHours).map(([day]) => (
-            <div key={day} className="flex items-center gap-md p-lg border-2 border-neutral-100 rounded-lg bg-background-secondary transition-all duration-300 ease-in-out">
-              <div className="relative flex items-center justify-center w-6 h-6">
+            <div key={day} className="flex items-center gap-md p-lg border-2 border-neutral-100 rounded-lg bg-background-secondary transition-all duration-300 ease-in-out w-full min-w-0">
+              <div className="relative flex items-center justify-center w-6 h-6 flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={!operatingHours[day as keyof typeof operatingHours].closed}
@@ -287,11 +417,11 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                 )}
               </div>
               
-              <div className="text-base font-semibold text-neutral-700 capitalize min-w-[80px] flex items-center">
+              <div className="text-base font-semibold text-neutral-700 capitalize w-24 flex-shrink-0">
                 {day}
               </div>
               
-              <div className="flex gap-sm items-center flex-1">
+              <div className="flex gap-sm items-center flex-1 min-w-0">
                 <input
                   type="time"
                   value={operatingHours[day as keyof typeof operatingHours].open}
@@ -305,13 +435,13 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                     }));
                   }}
                   disabled={!isEditing}
-                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
+                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm flex-shrink-0 ${
                     isEditing 
                       ? 'bg-white text-neutral-700 border-neutral-300 cursor-text focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]' 
                       : 'bg-background-secondary text-neutral-500 border-neutral-300 cursor-not-allowed'
                   }`}
                 />
-                <span className="text-sm text-neutral-500 font-medium">to</span>
+                <span className="text-sm text-neutral-500 font-medium flex-shrink-0 whitespace-nowrap">to</span>
                 <input
                   type="time"
                   value={operatingHours[day as keyof typeof operatingHours].close}
@@ -325,7 +455,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                     }));
                   }}
                   disabled={!isEditing}
-                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm ${
+                  className={`px-3 py-2.5 rounded-md border-2 transition-all duration-300 ease-in-out outline-none shadow-custom-sm flex-shrink-0 ${
                     isEditing 
                       ? 'bg-white text-neutral-700 border-neutral-300 cursor-text focus:border-primary focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]' 
                       : 'bg-background-secondary text-neutral-500 border-neutral-300 cursor-not-allowed'
@@ -343,16 +473,6 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
   const renderMedicinesTab = () => (
     <div className="p-xl flex flex-col gap-xl h-full max-w-6xl mx-auto">
       
-      {/* Section Header */}
-      <div className="text-center mb-lg">
-        <h2 className="text-3xl font-bold text-text-primary m-0 mb-sm">
-          Medicine Management
-        </h2>
-        <p className="text-base text-neutral-600 m-0">
-          Manage your pharmacy inventory and medicine stock
-        </p>
-      </div>
-
       {/* Quick Stats */}
       <div className="bg-white rounded-xl p-xl shadow-custom-md border border-black/5">
         <h3 className="text-xl font-semibold text-text-primary mb-lg border-b-2 border-primary pb-sm">
@@ -496,7 +616,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                 </div>
                 <div>
                   <div className="text-base font-bold text-text-primary">
-                    {pharmacyData.name}
+                    {pharmacyData?.name || 'Pharmacy'}
                   </div>
                   <div className="text-xs text-neutral-600">
                     Pharmacist Dashboard
@@ -549,7 +669,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
               </button>
               
               <button
-                onClick={() => console.log('Logout')}
+                onClick={handleLogout}
                 className="flex items-center gap-sm p-md bg-transparent border border-error rounded-md text-error cursor-pointer transition-all duration-200 ease-in-out text-left w-full hover:bg-red-50"
               >
                 <LogOut size={18} />
@@ -597,10 +717,7 @@ export const PharmacistDashboardPage: React.FC<PharmacistDashboardPageProps> = (
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    console.log('Save profile');
-                    setIsEditing(false);
-                  }}
+                  onClick={handleSaveProfile}
                   className="px-5 py-2.5 bg-gradient-to-br from-white to-background-secondary border border-white/30 rounded-lg text-primary text-sm font-bold cursor-pointer transition-all duration-300 ease-in-out shadow-custom-md outline-none min-w-[120px] relative overflow-hidden hover:-translate-y-0.5 hover:shadow-custom-xl hover:bg-gradient-to-br hover:from-white hover:to-background-tertiary active:translate-y-0"
                 >
                   Save Changes

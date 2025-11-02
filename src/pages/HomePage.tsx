@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Pill } from 'lucide-react';
+import { Search, Pill } from 'lucide-react';
 import { Button } from '../components/Button';
 
 interface HomePageProps {
@@ -9,7 +9,6 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin }) => {
   const [medicineName, setMedicineName] = useState('');
-  const [location, setLocation] = useState('');
 
   const handleSearch = () => {
     if (medicineName.trim()) {
@@ -74,24 +73,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onSearch, onPharmacistLogin 
               className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
             />
           </div>
-
-          {/* Divider */}
-          <div className="w-px h-10 bg-neutral-200/80" />
-
-          {/* Location Input */}
-          <div className="flex-1 flex items-center bg-background-secondary/80 rounded-xl px-3 py-1 border border-neutral-200/60">
-            <MapPin size={18} color="#64748b" className="mr-2 flex-shrink-0" />
-            <input
-              placeholder="Location (optional)"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              className="bg-transparent border-none outline-none text-base font-medium text-text-primary w-full py-3"
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="w-px h-10 bg-neutral-200/80" />
 
           {/* Search Button */}
           <Button

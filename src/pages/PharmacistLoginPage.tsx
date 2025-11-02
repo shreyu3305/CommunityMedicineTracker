@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, Building } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { apiClient } from '../services/api';
 
 interface PharmacistLoginPageProps {
   onBack?: () => void;
@@ -28,25 +29,66 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
   const [pharmacyName, setPharmacyName] = useState('');
   const [pharmacyAddress, setPharmacyAddress] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      if (apiClient.isAuthenticated()) {
+        const user = apiClient.getCurrentUser();
+        // Check if user is a pharmacist
+        if (user && (user.role === 'pharmacist' || user.role === 'PHARMACIST')) {
+          // User is already logged in as pharmacist, redirect to dashboard
+          navigate('/pharmacist/dashboard');
+          return;
+        }
+      }
+      setCheckingAuth(false);
+    };
+
+    checkAuthentication();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    if (isRegisterMode) {
-      // Simulate registration process
-      setTimeout(() => {
-        console.log('Registration:', { email, password, pharmacyName, pharmacyAddress });
-        setIsLoading(false);
-        // Switch back to login mode after successful registration
-        setIsRegisterMode(false);
-      }, 1500);
-    } else {
-      // Simulate login process
-      setTimeout(() => {
-        onLogin({ email, password });
-        setIsLoading(false);
-      }, 1500);
+    try {
+      if (isRegisterMode) {
+        if (password !== confirmPassword) {
+          alert('Passwords do not match');
+          setIsLoading(false);
+          return;
+        }
+
+        // Register new pharmacist account with pharmacy details
+        const registerResponse = await apiClient.register(email, password, pharmacyName, 'pharmacist', pharmacyName, pharmacyAddress);
+        
+        if (registerResponse.ok) {
+          alert('Registration successful! Please login.');
+          setIsRegisterMode(false);
+          setPharmacyName('');
+          setPharmacyAddress('');
+          setConfirmPassword('');
+        } else {
+          alert(registerResponse.error?.message || 'Registration failed');
+        }
+      } else {
+        // Login
+        const loginResponse = await apiClient.login(email, password);
+        
+        if (loginResponse.ok && loginResponse.data) {
+          onLogin({ email, password });
+          navigate('/pharmacist/dashboard');
+        } else {
+          alert(loginResponse.error?.message || 'Login failed');
+        }
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +110,15 @@ export const PharmacistLoginPage: React.FC<PharmacistLoginPageProps> = ({
       `}</style>
     </>
   );
+
+  // Show loading while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-primary relative overflow-hidden flex items-center justify-center">
+        <div className="text-white text-xl">Checking authentication...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-primary relative overflow-hidden">

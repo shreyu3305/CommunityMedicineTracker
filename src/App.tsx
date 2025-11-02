@@ -22,8 +22,12 @@ function AppContent() {
 
   const handleSearch = (medicine: string) => {
     // Navigate to search results with query parameter
-    const query = medicine || 'Medicine';
-    navigate(`/search?q=${encodeURIComponent(query)}`);
+    // If medicine is empty, navigate without query to show all pharmacies
+    if (!medicine || medicine.trim() === '') {
+      navigate('/search');
+    } else {
+      navigate(`/search?q=${encodeURIComponent(medicine)}`);
+    }
   };
 
   const handlePharmacyClick = (pharmacyName: string) => {

@@ -453,6 +453,8 @@ export const MedicineDetailsModal: React.FC<MedicineDetailsModalProps> = ({
 };
 
 // Mock medicine details data
+// Note: Medicine details would typically be fetched from the API
+// This component works with the medicine data passed as props
 export const mockMedicineDetails: MedicineDetails[] = [
   {
     id: '1',

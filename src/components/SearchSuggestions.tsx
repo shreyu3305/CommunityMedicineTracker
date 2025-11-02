@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { colors, spacing, borderRadius, shadows, typography } from '../styles/tokens';
+import { apiClient } from '../services/api';
 
 export interface SearchSuggestion {
   id: string;
@@ -636,50 +637,6 @@ export const SearchSuggestionsInput: React.FC<SearchSuggestionsInputProps> = ({
   );
 };
 
-// Mock data for search suggestions
-export const mockSearchSuggestions: SearchSuggestion[] = [
-  {
-    id: '1',
-    text: 'Paracetamol',
-    type: 'medicine',
-    confidence: 0.95,
-    description: 'Pain relief and fever reducer',
-    icon: '💊'
-  },
-  {
-    id: '2',
-    text: 'Apollo Pharmacy',
-    type: 'pharmacy',
-    confidence: 0.90,
-    description: '24/7 pharmacy chain',
-    icon: '🏥'
-  },
-  {
-    id: '3',
-    text: 'Pain Relief',
-    type: 'category',
-    confidence: 0.85,
-    description: 'Medicines for pain management',
-    icon: '📂'
-  },
-  {
-    id: '4',
-    text: 'Cipla',
-    type: 'medicine',
-    confidence: 0.80,
-    description: 'Pharmaceutical company',
-    icon: '💊'
-  },
-  {
-    id: '5',
-    text: 'MedPlus',
-    type: 'pharmacy',
-    confidence: 0.75,
-    description: 'Pharmacy chain',
-    icon: '🏥'
-  }
-];
-
 // Search suggestions hook
 export const useSearchSuggestions = (query: string) => {
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
@@ -693,17 +650,59 @@ export const useSearchSuggestions = (query: string) => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    const timeout = setTimeout(() => {
-      const filtered = mockSearchSuggestions.filter(suggestion =>
-        suggestion.text.toLowerCase().includes(query.toLowerCase()) ||
-        suggestion.description?.toLowerCase().includes(query.toLowerCase())
-      );
-      
-      setSuggestions(filtered);
-      setIsLoading(false);
-    }, 300);
+    // Fetch suggestions from API
+    const fetchSuggestions = async () => {
+      try {
+        const searchTerm = query.toLowerCase();
+        const suggestionsList: SearchSuggestion[] = [];
 
+        // Fetch medicines
+        const medicinesResponse = await apiClient.getMedicines();
+        if (medicinesResponse.ok && medicinesResponse.data) {
+          medicinesResponse.data
+            .filter((med: any) => med.name.toLowerCase().includes(searchTerm))
+            .slice(0, 5)
+            .forEach((med: any) => {
+              suggestionsList.push({
+                id: med._id || med.id,
+                text: med.name,
+                type: 'medicine',
+                confidence: 0.9,
+                description: `Medicine - ${med.quantity || 0} in stock`,
+                icon: '💊'
+              });
+            });
+        }
+
+        // Fetch pharmacies
+        const pharmaciesResponse = await apiClient.getPharmacies();
+        if (pharmaciesResponse.ok && pharmaciesResponse.data) {
+          pharmaciesResponse.data
+            .filter((pharm: any) => pharm.name.toLowerCase().includes(searchTerm))
+            .slice(0, 3)
+            .forEach((pharm: any) => {
+              suggestionsList.push({
+                id: pharm._id || pharm.id,
+                text: pharm.name,
+                type: 'pharmacy',
+                confidence: 0.85,
+                description: pharm.address || 'Pharmacy',
+                icon: '🏥'
+              });
+            });
+        }
+
+        setSuggestions(suggestionsList.slice(0, 8)); // Limit to 8 suggestions
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        setSuggestions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Debounce API calls
+    const timeout = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(timeout);
   }, [query]);
 
