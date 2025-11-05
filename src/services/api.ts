@@ -1,6 +1,6 @@
 // API Service for backend communication
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://cmtbackend.onrender.com/api/v1';
 
 interface ApiResponse<T> {
   ok: boolean;
